@@ -1,6 +1,32 @@
 #include "main.h"
+#include "geometry.h"
 
-void GenerateCDateText(PblTm *t, char* cdtext)
+bool rm_leading_0(char* str)
+{
+   if(str[0] == '0')
+   {
+	memmove(str, &str[1], strlen(str));
+	return true;
+   }
+   else
+	return false;
+}
+
+
+void update_textlayer(PblTm *t, TextLayer* l, uint8_t (*upmethod)(PblTm*, char*))
+{
+	static char txt[NumTextLayers][TxtBufferSize];
+	char buf[TxtBufferSize];
+	uint8_t uid;
+        
+        uid = upmethod(t, buf);
+	memmove(txt[uid], buf, TxtBufferSize);
+	text_layer_set_text(l,txt[uid]);
+}
+
+
+
+uint8_t GenerateCDateText(PblTm *t, char* cdtext)
 {
 
   Date today;
@@ -13,6 +39,8 @@ void GenerateCDateText(PblTm *t, char* cdtext)
   Solar2Lunar(&today);
 
   CDateDisplayZh(&today,cdtext);
+  
+  return 0;
 }
 
 
@@ -64,16 +92,7 @@ void CDateDisplayZh(Date *d, char* text)
 }
 
 
-void update_textlayer(PblTm *t, TextLayer* l, void (*upmethod)(PblTm*, char*))
-{
-	char *txt = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        
-        upmethod(t, txt);
-	text_layer_set_text(l,txt);
-}
-
-
-void DateinZh(PblTm *t, char* txt)
+uint8_t DateinZh(PblTm *t, char* txt)
 {
 	char mon_zh[] = "月";
 	char day_zh[] = "日";
@@ -81,24 +100,19 @@ void DateinZh(PblTm *t, char* txt)
 	char par[] = "()";
 
 	char mon_n[] = "00";
-	int m = sizeof(mon_n);
+	int m = sizeof(mon_n)-1;
 	char day_n[] = "00";
-	char *nu = "\0";
 	int d = sizeof(day_n)-1;
 	const int zhl = 3;
 
 	int place = 0;
 
-	string_format_time(mon_n, m, "%m", t);
-	string_format_time(day_n, d, "%d", t);
-	if (mon_n[0] == '0') {
+	string_format_time(mon_n, m+1, "%m", t);
+	string_format_time(day_n, d+1, "%d", t);
+	if ( rm_leading_0(mon_n) ) 
 		m -= 1;
-		memcpy(mon_n, &mon_n[1], m);
-	}
-	if (day_n[0] == '0') {
+	if ( rm_leading_0(day_n) )
 		d -= 1;
-		memcpy(day_n, &day_n[1], d);
-	}
 
 	memcpy(txt+place, mon_n, m);
 	place += m;
@@ -114,9 +128,40 @@ void DateinZh(PblTm *t, char* txt)
 	place += zhl;
 	memcpy(txt+place, par+1, 1);
 	place += 1;
-	memcpy(txt+place, nu, 1);
+	memcpy(txt+place, "\0", 1);
 
+	return 1;
 }
+
+
+uint8_t TimeText(PblTm *t, char* timetxt) 
+{
+	string_format_time(timetxt, 6, "%I:%M", t);
+	rm_leading_0(timetxt);
+	return 2;
+}
+
+
+uint8_t PeriodZh(PblTm *t, char* p) 
+{
+    if(t->tm_hour<5)
+	memcpy(p, "凌\n晨", 8);
+    else if(t->tm_hour>=5 && t->tm_hour<7)
+	memcpy(p, "清\n晨", 8);
+    else if(t->tm_hour>=7 && t->tm_hour<11)
+	memcpy(p, "上\n午", 8);
+    else if(t->tm_hour>=11 && t->tm_hour<13)
+	memcpy(p, "中\n午", 8);
+    else if(t->tm_hour>=13 && t->tm_hour<18)
+	memcpy(p, "下\n午", 8);
+    else if(t->tm_hour==18)
+	memcpy(p, "傍\n晚", 8);
+    else
+	memcpy(p, "晚\n上", 8);
+
+    return 3;
+}
+
 
 
 

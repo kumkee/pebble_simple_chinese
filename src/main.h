@@ -2,11 +2,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-void update_textlayer(PblTm* t, TextLayer* l, void (*upmethod)(PblTm*,char*));
+void update_textlayer(PblTm* t, TextLayer* l, uint8_t (*upmethod)(PblTm*,char*));
 
-void GenerateCDateText(PblTm *t, char* cdtext);
+uint8_t GenerateCDateText(PblTm *, char*);
 
-void DateinZh(PblTm *t, char* cdtext);
+uint8_t DateinZh(PblTm *, char*);
+
+uint8_t TimeText(PblTm *, char*); 
+
+uint8_t PeriodZh(PblTm *, char*); 
 
 
 typedef char byte;

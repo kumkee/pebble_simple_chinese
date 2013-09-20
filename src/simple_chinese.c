@@ -33,11 +33,6 @@ void line_layer_update_callback(Layer *me, GContext* ctx) {
 }
 
 
-#define time_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_45))
-#define period_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_16))
-#define date_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_21))
-#define cdate_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_17))
-
 #define LayerInit(Layer, X, Y, L, H, Font) \
 	text_layer_init(&Layer, window.layer.frame); \
 	text_layer_set_text_color(&Layer, GColorWhite); \
@@ -61,16 +56,12 @@ void handle_init(AppContextRef ctx) {
   layer_add_child(&window.layer, &line_layer);
 
   LayerInitText(period);
-  text_layer_set_text(&text_period_layer, "上\n午");
 
   LayerInitText(time);
-  text_layer_set_text(&text_time_layer, "12:59");
 
   LayerInitText(date);
-  //text_layer_set_text(&text_date_layer, "12月31日(日)");
 
   LayerInitText(cdate);
-  //text_layer_set_text(&text_cdate_layer, "閏十一月初八");
 
 }
 
@@ -78,6 +69,8 @@ void handle_init(AppContextRef ctx) {
 void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *evt) {
   update_textlayer(evt->tick_time,&text_cdate_layer,GenerateCDateText);
   update_textlayer(evt->tick_time,&text_date_layer,DateinZh);
+  update_textlayer(evt->tick_time,&text_time_layer,TimeText);
+  update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
 }
 
 
