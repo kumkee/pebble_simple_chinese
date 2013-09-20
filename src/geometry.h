@@ -1,6 +1,10 @@
 #ifndef GEO_H
 #define GEO_H
 
+#define include_ccd	true		//whether include Chinese Calendar date
+
+#define white_on_black	true
+
 #define TxtBufferSize	25
 
 #define NumTextLayers	4
@@ -37,5 +41,15 @@
 #define period_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_16))
 #define date_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_21))
 #define cdate_font	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_17))
+
+
+#if white_on_black
+#define backgroundcolor	GColorBlack
+#define contentcolor	GColorWhite
+#else
+#define backgroundcolor	GColorWhite
+#define contentcolor	GColorBlack
+#endif
+
 
 #endif

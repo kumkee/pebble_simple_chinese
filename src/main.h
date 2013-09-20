@@ -24,4 +24,12 @@ void Solar2Lunar(Date*);
 
 void CDateDisplayZh(Date*, char*);
 
+typedef enum 
+{
+   TIME_DRAWN = 1<<0,
+   DATE_DRAWN = 1<<1,
+   PERIOD_DRAWN = 1<<2,
+   CDATE_DRAWN = 1<<3
+} TextDrawn;
+
 #endif

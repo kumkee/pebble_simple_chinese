@@ -25,7 +25,7 @@ TextLayer text_cdate_layer;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
-  graphics_context_set_stroke_color(ctx, GColorWhite);
+  graphics_context_set_stroke_color(ctx, contentcolor);
 
   graphics_draw_line(ctx, GPoint(line_pos_x, line_pos_y), GPoint(tot_length-line_pos_x, line_pos_y));
   graphics_draw_line(ctx, GPoint(line_pos_x, line_pos_y+1), GPoint(tot_length-line_pos_x, line_pos_y+1));
@@ -35,7 +35,7 @@ void line_layer_update_callback(Layer *me, GContext* ctx) {
 
 #define LayerInit(Layer, X, Y, L, H, Font) \
 	text_layer_init(&Layer, window.layer.frame); \
-	text_layer_set_text_color(&Layer, GColorWhite); \
+	text_layer_set_text_color(&Layer, contentcolor); \
 	text_layer_set_background_color(&Layer, GColorClear); \
 	layer_set_frame(&Layer.layer, GRect(X, Y, L, H)); \
 	text_layer_set_font(&Layer, Font); \
@@ -47,7 +47,7 @@ void handle_init(AppContextRef ctx) {
 
   window_init(&window, "Simple Chinese");
   window_stack_push(&window, true /* Animated */);
-  window_set_background_color(&window, GColorBlack);
+  window_set_background_color(&window, backgroundcolor);
 
   resource_init_current_app(&APP_RESOURCES);
 
@@ -66,11 +66,33 @@ void handle_init(AppContextRef ctx) {
 }
 
 
-void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *evt) {
-  update_textlayer(evt->tick_time,&text_cdate_layer,GenerateCDateText);
-  update_textlayer(evt->tick_time,&text_date_layer,DateinZh);
+void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *evt)
+{
+  static TextDrawn d = 0;
+
+  if( (evt->units_changed & DAY_UNIT) || !(d & DATE_DRAWN) )
+  {
+	update_textlayer(evt->tick_time,&text_date_layer,DateinZh);
+	d |= DATE_DRAWN;
+  }
+
   update_textlayer(evt->tick_time,&text_time_layer,TimeText);
-  update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
+  d |= TIME_DRAWN;
+
+  if( (evt->units_changed & HOUR_UNIT) || !(d & PERIOD_DRAWN) )
+  {
+	update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
+	d |= PERIOD_DRAWN;
+  }
+
+  if(!include_ccd)
+	return;
+
+  if( (evt->units_changed & HOUR_UNIT && evt->tick_time->tm_hour==23) || !(d & CDATE_DRAWN) )
+  {
+	update_textlayer(evt->tick_time,&text_cdate_layer,GenerateCDateText);
+	d |= CDATE_DRAWN;
+  }
 }
 
 

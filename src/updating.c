@@ -40,7 +40,7 @@ uint8_t GenerateCDateText(PblTm *t, char* cdtext)
 
   CDateDisplayZh(&today,cdtext);
   
-  return 0;
+  return 3;
 }
 
 
@@ -130,7 +130,7 @@ uint8_t DateinZh(PblTm *t, char* txt)
 	place += 1;
 	memcpy(txt+place, "\0", 1);
 
-	return 1;
+	return 0;
 }
 
 
@@ -159,12 +159,8 @@ uint8_t PeriodZh(PblTm *t, char* p)
     else
 	memcpy(p, "晚\n上", 8);
 
-    return 3;
+    return 1;
 }
-
-
-
-
 
 
 
