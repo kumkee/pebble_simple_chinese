@@ -96,7 +96,7 @@ uint8_t DateinZh(PblTm *t, char* txt)
 {
 	char mon_zh[] = "月";
 	char day_zh[] = "日";
-	char wday_zh[] = "一二三四五六日";
+	char wday_zh[] = "日一二三四五六";
 	char par[] = "()";
 
 	char mon_n[] = "00";
