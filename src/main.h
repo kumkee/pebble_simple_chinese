@@ -12,6 +12,8 @@ uint8_t TimeText(PblTm *, char*);
 
 uint8_t PeriodZh(PblTm *, char*); 
 
+uint8_t SecofTm(PblTm *, char*);
+
 
 typedef char byte;
 

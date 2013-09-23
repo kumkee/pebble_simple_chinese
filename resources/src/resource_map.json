@@ -3,10 +3,37 @@
  "versionDefName": "APP_RESOURCES",
  "media": [
         {
+        "type": "png",
+        "defName": "IMAGE_MENU_ICON",
+        "file": "images/menu_icon.png"
+        },
+
+        {
         "type": "font",
-        "characterRegex": "[:0-9]",
+        "characterRegex": "[:0-9 ]",
         "defName": "FONT_ROBOTO_BOLD_45",
         "file": "fonts/Roboto-Bold.ttf"
+        },
+
+        {
+        "type": "font",
+        "characterRegex": "[:0-9 ]",
+        "defName": "FONT_ROBOTO_BOLD_40",
+        "file": "fonts/Roboto-Bold.ttf"
+        },
+
+        {
+        "type": "font",
+        "characterRegex": "[:0-9 ]",
+        "defName": "FONT_ROBOTO_BOLD_49",
+        "file": "fonts/Roboto-Bold.ttf"
+        },
+
+        {
+        "type": "font",
+        "characterRegex": "[0-9]",
+        "defName": "FONT_ROBOTO_CONDENSED_13",
+        "file": "fonts/Roboto-Condensed.ttf"
         },
 
         {
@@ -19,8 +46,7 @@
         {
         "type": "font",
         "characterRegex": "[[0-9月日一二三四五六()]",
-        "defName": "FONT_IPAG_21",
-        "file": "fonts/ipag.ttf"
+        "defName": "FONT_IPAG_21", "file": "fonts/ipag.ttf"
         },
 
         {
