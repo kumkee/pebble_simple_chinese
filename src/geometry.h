@@ -1,11 +1,16 @@
 #ifndef GEO_H
 #define GEO_H
 
-  #define include_ccd	true		//whether include Chinese Calendar date
+  #define no_ccd		false	//whether to include Chinese Calendar date
 
-  #define white_on_black	true
+  #define include_sec		false	//whether to include second
 
-  #define include_sec	true
+  #define white_background	false
+  //These are default configurations
+
+  #define include_ccd		!no_ccd	//whether to include Chinese Calendar date
+
+  #define white_on_black	!white_background
 
   #define TxtBufferSize	25
 
@@ -88,8 +93,9 @@
     #if	include_sec
 	#define secd_uid	peri_uid + 1
 	#define NumTextLayers	COUNTER + 1
-    #endif
+    #else
 	#define NumTextLayers	COUNTER
+    #endif
   #endif
 
 
