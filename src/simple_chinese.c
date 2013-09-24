@@ -77,7 +77,20 @@ void handle_init(AppContextRef ctx) {
 }
 
 
-void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *evt)
+void RelocateSecLayer(int hr, TextDrawn d)
+{
+  #ifndef RelocateSec
+  #define RelocateSec(x) layer_set_frame(&text_sec_layer.layer, GRect(x, sec_pos_y, sec_length, sec_height))
+  #endif
+  if( !(d & PERIOD_DRAWN) && hr%12>1 && hr%12<10 )
+  {   			 RelocateSec(sec_pos_x-11); }
+  else if(hr%12 == 10) { RelocateSec(sec_pos_x); }
+  else if(hr%12 == 1)  { RelocateSec(sec_pos_x-11); }
+  else	return;
+}
+
+
+void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 {
   static TextDrawn d = 0;
 
@@ -96,7 +109,12 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *evt)
   if( ( (evt->units_changed & HOUR_UNIT) || !(d & PERIOD_DRAWN) ) 
 		&& !clock_is_24h_style() )
   {
+	#if include_sec
+	RelocateSecLayer(evt->tick_time->tm_hour, d);
+	#endif
+	
 	update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
+
 	d |= PERIOD_DRAWN;
   }
 
@@ -119,7 +137,7 @@ void pbl_main(void *params) {
   PebbleAppHandlers handlers = {
     .init_handler = &handle_init,
     .tick_info = {
-      .tick_handler = &handle_minute_tick,
+      .tick_handler = &handle_minsec_tick,
       .tick_units = my_tick_unit
     }
   };

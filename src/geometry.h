@@ -3,7 +3,7 @@
 
   #define no_ccd		false	//whether to include Chinese Calendar date
 
-  #define include_sec		false	//whether to include second
+  #define include_sec		true	//whether to include second
 
   #define white_background	false
   //These are default configurations
