@@ -20,39 +20,39 @@ Layer line_layer;
 TextLayer text_time_layer;
 TextLayer text_period_layer;
 TextLayer text_date_layer;
-#if include_ccd
+#if INCLUDE_CCD
 TextLayer text_cdate_layer;
 #endif
-#if include_sec
+#if INCLUDE_SEC
 TextLayer text_sec_layer;
 #endif
 
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
-  graphics_context_set_stroke_color(ctx, contentcolor);
+  graphics_context_set_stroke_color(ctx, CONTENTCOLOR);
 
-  graphics_draw_line(ctx, GPoint(line_pos_x, line_pos_y), GPoint(tot_length-line_pos_x, line_pos_y));
-  graphics_draw_line(ctx, GPoint(line_pos_x, line_pos_y+1), GPoint(tot_length-line_pos_x, line_pos_y+1));
+  graphics_draw_line(ctx, GPoint(LINE_POS_X, LINE_POS_Y), GPoint(TOT_LENGTH-LINE_POS_X, LINE_POS_Y));
+  graphics_draw_line(ctx, GPoint(LINE_POS_X, LINE_POS_Y+1), GPoint(TOT_LENGTH-LINE_POS_X, LINE_POS_Y+1));
 
 }
 
 
 #define TLayerConfig(Layer, X, Y, L, H, Font) \
 	text_layer_init(&Layer, window.layer.frame); \
-	text_layer_set_text_color(&Layer, contentcolor); \
+	text_layer_set_text_color(&Layer, CONTENTCOLOR); \
 	text_layer_set_background_color(&Layer, GColorClear); \
 	layer_set_frame(&Layer.layer, GRect(X, Y, L, H)); \
 	text_layer_set_font(&Layer, Font); \
 	layer_add_child(&window.layer, &Layer.layer);
 
-#define TLayerCFG(name) TLayerConfig(text_##name##_layer, name##_pos_x, name##_pos_y, name##_length, name##_height, name##_font)
+#define TLayerCFG(name) TLayerConfig(text_##name##_layer, name##_POS_X, name##_POS_Y, name##_LENGTH, name##_HEIGHT, name##_FONT)
 
 void handle_init(AppContextRef ctx) {
 
   window_init(&window, "Simple Chinese");
   window_stack_push(&window, true /* Animated */);
-  window_set_background_color(&window, backgroundcolor);
+  window_set_background_color(&window, BACKGROUNDCOLOR);
 
   resource_init_current_app(&APP_RESOURCES);
 
@@ -66,11 +66,11 @@ void handle_init(AppContextRef ctx) {
   
   if(!clock_is_24h_style()) TLayerCFG(period);
 
-  #if include_ccd
+  #if INCLUDE_CCD
   TLayerCFG(cdate);
   #endif
 
-  #if include_sec
+  #if INCLUDE_SEC
   TLayerCFG(sec);
   #endif
 
@@ -80,12 +80,12 @@ void handle_init(AppContextRef ctx) {
 void RelocateSecLayer(int hr, TextDrawn d)
 {
   #ifndef RelocateSec
-  #define RelocateSec(x) layer_set_frame(&text_sec_layer.layer, GRect(x, sec_pos_y, sec_length, sec_height))
+  #define RelocateSec(x) layer_set_frame(&text_sec_layer.layer, GRect(x, sec_POS_Y, sec_LENGTH, sec_HEIGHT))
   #endif
   if( !(d & PERIOD_DRAWN) && hr%12>1 && hr%12<10 )
-  {   			 RelocateSec(sec_pos_x-11); }
-  else if(hr%12 == 10) { RelocateSec(sec_pos_x); }
-  else if(hr%12 == 1)  { RelocateSec(sec_pos_x-11); }
+  {   			 RelocateSec(sec_POS_X-11); }
+  else if(hr%12 == 10) { RelocateSec(sec_POS_X); }
+  else if(hr%12 == 1)  { RelocateSec(sec_POS_X-11); }
   else	return;
 }
 
@@ -109,7 +109,7 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
   if( ( (evt->units_changed & HOUR_UNIT) || !(d & PERIOD_DRAWN) ) 
 		&& !clock_is_24h_style() )
   {
-	#if include_sec
+	#if INCLUDE_SEC
 	RelocateSecLayer(evt->tick_time->tm_hour, d);
 	#endif
 	
@@ -118,16 +118,16 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 	d |= PERIOD_DRAWN;
   }
 
-  #if include_ccd
-  if( include_ccd && ( (evt->units_changed & HOUR_UNIT && evt->tick_time->tm_hour==23)
-		|| !(d & CDATE_DRAWN) ) )
+  #if INCLUDE_CCD
+  if( (evt->units_changed & HOUR_UNIT && evt->tick_time->tm_hour==23)
+		|| !(d & CDATE_DRAWN) )
   {
 	update_textlayer(evt->tick_time,&text_cdate_layer,GenerateCDateText);
 	d |= CDATE_DRAWN;
   }
   #endif
 
-  #if include_sec
+  #if INCLUDE_SEC
   update_textlayer(evt->tick_time, &text_sec_layer, SecofTm);
   #endif
 }
@@ -138,7 +138,7 @@ void pbl_main(void *params) {
     .init_handler = &handle_init,
     .tick_info = {
       .tick_handler = &handle_minsec_tick,
-      .tick_units = my_tick_unit
+      .tick_units = MY_TICK_UNIT
     }
   };
   app_event_loop(params, &handlers);

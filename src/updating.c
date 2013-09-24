@@ -27,18 +27,18 @@ bool rp_leading_0(char* str)
 
 void update_textlayer(PblTm *t, TextLayer* l, uint8_t (*upmethod)(PblTm*, char*))
 {
-	static char txt[NumTextLayers][TxtBufferSize];
-	char buf[TxtBufferSize];
+	static char txt[NUMTEXTLAYERS][TXTBUFFERSIZE];
+	char buf[TXTBUFFERSIZE];
 	uint8_t uid;
         
         uid = upmethod(t, buf);
-	memmove(txt[uid], buf, TxtBufferSize);
+	memmove(txt[uid], buf, TXTBUFFERSIZE);
 	text_layer_set_text(l,txt[uid]);
 }
 
 
 
-#if include_ccd
+#if INCLUDE_CCD
 uint8_t GenerateCDateText(PblTm *t, char* cdtext)
 {
 
@@ -53,7 +53,7 @@ uint8_t GenerateCDateText(PblTm *t, char* cdtext)
 
   CDateDisplayZh(&today,cdtext);
   
-  return cdat_uid;
+  return CDAT_UID;
 }
 
 
@@ -144,7 +144,7 @@ uint8_t DateinZh(PblTm *t, char* txt)
 	place += 1;
 	memcpy(txt+place, "\0", 1);
 
-	return date_uid;
+	return DATE_UID;
 }
 
 
@@ -158,7 +158,7 @@ uint8_t TimeText(PblTm *t, char* timetxt)
     else
 	string_format_time(timetxt, 6, "%R", t);
 	
-    return time_uid;
+    return TIME_UID;
 }
 
 
@@ -179,14 +179,14 @@ uint8_t PeriodZh(PblTm *t, char* p)
     else
 	memcpy(p, "晚\n上", 8);
 
-    return peri_uid;
+    return PERI_UID;
 }
 
 
-#if include_sec
+#if INCLUDE_SEC
 uint8_t SecofTm(PblTm *t, char* s)
 {
     string_format_time(s, 3, "%S", t);
-    return secd_uid;
+    return SECD_UID;
 }
 #endif
