@@ -76,7 +76,7 @@ void handle_init(AppContextRef ctx) {
 
 }
 
-
+#if INCLUDE_SEC
 void RelocateSecLayer(int hr, TextDrawn d)
 {
   #ifndef RelocateSec
@@ -88,6 +88,7 @@ void RelocateSecLayer(int hr, TextDrawn d)
   else if(hr%12 == 1)  { RelocateSec(sec_POS_X-11); }
   else	return;
 }
+#endif
 
 
 void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
