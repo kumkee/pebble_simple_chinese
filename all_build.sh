@@ -1,7 +1,7 @@
 #!/bin/bash
 WF="simple_chinese"
 VM=2
-VS=0
+VS=1
 EXT='.pbw'
 GEO='src/geometry.h'
 MAIN="src/$WF.c"
@@ -14,6 +14,7 @@ symb=("n" "s" "w")
 tt=(true false)
 
 set -x
+mkdir $RDIR
 cp $MAIN $MAIN.sav
 sed -i -e "s/1\,\ 0\,/$VM\,\ $VS\,/" $MAIN
 
