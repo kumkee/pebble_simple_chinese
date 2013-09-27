@@ -20,7 +20,7 @@ Layer line_layer;
 
 DynTextLayer time_layer;
 TextLayer text_period_layer;
-TextLayer text_date_layer;
+DynTextLayer date_layer;
 #if INCLUDE_CCD
 TextLayer text_cdate_layer;
 #endif
@@ -63,7 +63,7 @@ void handle_init(AppContextRef ctx) {
 
   DTL_init(&time_layer, &window.layer, time_GRECT, time_FONT, _time_upd, _time_upd_cri);
 
-  TLayerCFG(date);
+  DTL_init(&date_layer, &window.layer, date_GRECT, date_FONT, _date_upd, _date_upd_cri);
   
   if(!clock_is_24h_style()) TLayerCFG(period);
 
@@ -83,11 +83,7 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 {
   static TextDrawn d = 0;
 
-  if( (evt->units_changed & DAY_UNIT) || !(d & DATE_DRAWN) )
-  {
-	update_textlayer(evt->tick_time,&text_date_layer,DateinZh);
-	d |= DATE_DRAWN;
-  }
+  date_layer.update(&date_layer, evt);
 
   time_layer.update(&time_layer, evt);
 

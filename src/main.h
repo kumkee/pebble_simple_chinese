@@ -8,6 +8,8 @@ void update_textlayer(PblTm* t, TextLayer* l, uint8_t (*upmethod)(PblTm*,char*))
 uint8_t GenerateCDateText(PblTm *, char*);
 
 uint8_t DateinZh(PblTm *, char*);
+void _date_upd(DynTextLayer*, PebbleTickEvent*); 
+bool _date_upd_cri(PebbleTickEvent*);
 
 void _time_upd(DynTextLayer*, PebbleTickEvent*); 
 bool _time_upd_cri(PebbleTickEvent*);

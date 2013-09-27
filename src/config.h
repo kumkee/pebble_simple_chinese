@@ -46,6 +46,7 @@
   #define date_HEIGHT	29
   #define date_POS_X	LEFT_MARGIN
   #define date_POS_Y	LINE_POS_Y - date_HEIGHT
+  #define date_GRECT	GRect(date_POS_X, date_POS_Y, date_LENGTH, date_HEIGHT)
 
   #define cdate_LENGTH	date_LENGTH
   #define cdate_HEIGHT	date_HEIGHT/3*2

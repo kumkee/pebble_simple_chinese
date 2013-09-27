@@ -106,7 +106,7 @@ void CDateDisplayZh(Date *d, char* text)
 #endif
 
 
-uint8_t DateinZh(PblTm *t, char* txt)
+void _date_upd(DynTextLayer* self, PebbleTickEvent* evt) 
 {
 	char mon_zh[] = "月";
 	char day_zh[] = "日";
@@ -121,31 +121,35 @@ uint8_t DateinZh(PblTm *t, char* txt)
 
 	int place = 0;
 
-	string_format_time(mon_n, m+1, "%m", t);
-	string_format_time(day_n, d+1, "%d", t);
+	string_format_time(mon_n, m+1, "%m", evt->tick_time);
+	string_format_time(day_n, d+1, "%d", evt->tick_time);
 	if ( rm_leading_0(mon_n) ) 
 		m -= 1;
 	if ( rm_leading_0(day_n) )
 		d -= 1;
 
-	memcpy(txt+place, mon_n, m);
+	memcpy(self->content+place, mon_n, m);
 	place += m;
-	memcpy(txt+place, mon_zh, zhl);
+	memcpy(self->content+place, mon_zh, zhl);
 	place += zhl;
-	memcpy(txt+place, day_n, d);
+	memcpy(self->content+place, day_n, d);
 	place += d;
-	memcpy(txt+place, day_zh, zhl);
+	memcpy(self->content+place, day_zh, zhl);
 	place += zhl;
-	memcpy(txt+place, par, 1);
+	memcpy(self->content+place, par, 1);
 	place += 1;
-	memcpy(txt+place, wday_zh+t->tm_wday*zhl, zhl);
+	memcpy(self->content+place, wday_zh+evt->tick_time->tm_wday*zhl, zhl);
 	place += zhl;
-	memcpy(txt+place, par+1, 1);
+	memcpy(self->content+place, par+1, 1);
 	place += 1;
-	memcpy(txt+place, "\0", 1);
-
-	return DATE_UID;
+	memcpy(self->content+place, "\0", 1);
 }
+
+bool _date_upd_cri(PebbleTickEvent* evt)
+{
+    return evt->units_changed & DAY_UNIT;
+}
+
 
 
 void _time_upd(DynTextLayer* self, PebbleTickEvent* evt) 
