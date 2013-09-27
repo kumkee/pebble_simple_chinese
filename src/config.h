@@ -26,6 +26,7 @@
   #define period_HEIGHT	40
   #define period_POS_X	LEFT_MARGIN
   #define period_POS_Y	LINE_POS_Y + 9
+  #define period_GRECT	GRect(period_POS_X, period_POS_Y, period_LENGTH, period_HEIGHT)
 
   #define sec_LENGTH	13
   #define sec_HEIGHT	20
@@ -52,6 +53,7 @@
   #define cdate_HEIGHT	date_HEIGHT/3*2
   #define cdate_POS_X	LEFT_MARGIN
   #define cdate_POS_Y	date_POS_Y - cdate_HEIGHT
+  #define cdate_GRECT	GRect(cdate_POS_X, cdate_POS_Y, cdate_LENGTH, cdate_HEIGHT)
 
   #define time_FONT_O_RS	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_45))
   #define time_FONT_S	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_40))
@@ -76,30 +78,5 @@
     #define BACKGROUNDCOLOR	GColorWhite
     #define CONTENTCOLOR	GColorBlack
   #endif
-
-
-  //#define NumTextLayers	3	//minimum number of textlayers
-  #define COUNTER	3	//minimum number of textlayers
-
-  #define TIME_UID	0
-  #define DATE_UID	1
-  #define PERI_UID	2
-  #if	INCLUDE_CCD
-    #define CDAT_UID	PERI_UID + 1
-    #if	INCLUDE_SEC
-	#define SECD_UID	CDAT_UID + 1
-	#define NUMTEXTLAYERS	COUNTER + 2
-    #else
-	#define NUMTEXTLAYERS	COUNTER + 1
-    #endif
-  #else
-    #if	INCLUDE_SEC
-	#define SECD_UID	PERI_UID + 1
-	#define NUMTEXTLAYERS	COUNTER + 1
-    #else
-	#define NUMTEXTLAYERS	COUNTER
-    #endif
-  #endif
-
 
 #endif

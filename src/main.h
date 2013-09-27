@@ -3,18 +3,17 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-void update_textlayer(PblTm* t, TextLayer* l, uint8_t (*upmethod)(PblTm*,char*));
+void _cdate_upd(DynTextLayer*, PebbleTickEvent*); 
+bool _cdate_upd_cri(PebbleTickEvent*);
 
-uint8_t GenerateCDateText(PblTm *, char*);
-
-uint8_t DateinZh(PblTm *, char*);
 void _date_upd(DynTextLayer*, PebbleTickEvent*); 
 bool _date_upd_cri(PebbleTickEvent*);
 
 void _time_upd(DynTextLayer*, PebbleTickEvent*); 
 bool _time_upd_cri(PebbleTickEvent*);
 
-uint8_t PeriodZh(PblTm *, char*); 
+void _period_upd(DynTextLayer*, PebbleTickEvent*); 
+bool _period_upd_cri(PebbleTickEvent*);
 
 void _sec_upd(DynTextLayer*, PebbleTickEvent*);
 bool _sec_upd_cri();

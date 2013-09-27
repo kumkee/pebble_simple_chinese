@@ -25,35 +25,26 @@ bool rp_leading_0(char* str)
 }
 
 
-void update_textlayer(PblTm *t, TextLayer* l, uint8_t (*upmethod)(PblTm*, char*))
-{
-	static char txt[NUMTEXTLAYERS][TXTBUFFERSIZE];
-	char buf[TXTBUFFERSIZE];
-	uint8_t uid;
-        
-        uid = upmethod(t, buf);
-	memmove(txt[uid], buf, TXTBUFFERSIZE);
-	text_layer_set_text(l,txt[uid]);
-}
-
-
 
 #if INCLUDE_CCD
-uint8_t GenerateCDateText(PblTm *t, char* cdtext)
+void _cdate_upd(DynTextLayer* self, PebbleTickEvent* evt) 
 {
-
   Date today;
 
-  today.year  = t->tm_year + 1900;
-  today.month = t->tm_mon + 1;
-  today.day   = t->tm_mday;
-  today.hour  = t->tm_hour;
+  today.year  = evt->tick_time->tm_year + 1900;
+  today.month = evt->tick_time->tm_mon + 1;
+  today.day   = evt->tick_time->tm_mday;
+  today.hour  = evt->tick_time->tm_hour;
 
   Solar2Lunar(&today);
 
-  CDateDisplayZh(&today,cdtext);
-  
-  return CDAT_UID;
+  CDateDisplayZh(&today, self->content);
+}
+
+bool _cdate_upd_cri(PebbleTickEvent* evt)
+{
+    return evt->units_changed & HOUR_UNIT
+			&& evt->tick_time->tm_hour==23;
 }
 
 
@@ -171,26 +162,29 @@ bool _time_upd_cri(PebbleTickEvent* evt)
 }
 
 
-uint8_t PeriodZh(PblTm *t, char* p) 
+void _period_upd(DynTextLayer* self, PebbleTickEvent* evt) 
 {
-    if(t->tm_hour<5)
-	memcpy(p, "凌\n晨", 8);
-    else if(t->tm_hour>=5 && t->tm_hour<7)
-	memcpy(p, "清\n晨", 8);
-    else if(t->tm_hour>=7 && t->tm_hour<11)
-	memcpy(p, "上\n午", 8);
-    else if(t->tm_hour>=11 && t->tm_hour<13)
-	memcpy(p, "中\n午", 8);
-    else if(t->tm_hour>=13 && t->tm_hour<18)
-	memcpy(p, "下\n午", 8);
-    else if(t->tm_hour==18)
-	memcpy(p, "傍\n晚", 8);
+    if(evt->tick_time->tm_hour<5)
+	memcpy(self->content, "凌\n晨", 8);
+    else if(evt->tick_time->tm_hour>=5 && evt->tick_time->tm_hour<7)
+	memcpy(self->content, "清\n晨", 8);
+    else if(evt->tick_time->tm_hour>=7 && evt->tick_time->tm_hour<11)
+	memcpy(self->content, "上\n午", 8);
+    else if(evt->tick_time->tm_hour>=11 && evt->tick_time->tm_hour<13)
+	memcpy(self->content, "中\n午", 8);
+    else if(evt->tick_time->tm_hour>=13 && evt->tick_time->tm_hour<18)
+	memcpy(self->content, "下\n午", 8);
+    else if(evt->tick_time->tm_hour==18)
+	memcpy(self->content, "傍\n晚", 8);
     else
-	memcpy(p, "晚\n上", 8);
-
-    return PERI_UID;
+	memcpy(self->content, "晚\n上", 8);
 }
 
+bool _period_upd_cri(PebbleTickEvent* evt)
+{
+    return evt->units_changed & HOUR_UNIT
+			&& !clock_is_24h_style();
+}
 
 #if INCLUDE_SEC
 void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt)

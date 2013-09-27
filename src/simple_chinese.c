@@ -19,10 +19,10 @@ Window window;
 Layer line_layer;
 
 DynTextLayer time_layer;
-TextLayer text_period_layer;
+DynTextLayer period_layer;
 DynTextLayer date_layer;
 #if INCLUDE_CCD
-TextLayer text_cdate_layer;
+DynTextLayer cdate_layer;
 #endif
 #if INCLUDE_SEC
 DynTextLayer sec_layer;
@@ -39,15 +39,6 @@ void line_layer_update_callback(Layer *me, GContext* ctx) {
 }
 
 
-#define TLayerConfig(Layer, X, Y, L, H, Font) \
-	text_layer_init(&Layer, window.layer.frame); \
-	text_layer_set_text_color(&Layer, CONTENTCOLOR); \
-	text_layer_set_background_color(&Layer, GColorClear); \
-	layer_set_frame(&Layer.layer, GRect(X, Y, L, H)); \
-	text_layer_set_font(&Layer, Font); \
-	layer_add_child(&window.layer, &Layer.layer);
-
-#define TLayerCFG(name) TLayerConfig(text_##name##_layer, name##_POS_X, name##_POS_Y, name##_LENGTH, name##_HEIGHT, name##_FONT)
 
 void handle_init(AppContextRef ctx) {
 
@@ -65,14 +56,14 @@ void handle_init(AppContextRef ctx) {
 
   DTL_init(&date_layer, &window.layer, date_GRECT, date_FONT, _date_upd, _date_upd_cri);
   
-  if(!clock_is_24h_style()) TLayerCFG(period);
+  if(!clock_is_24h_style())
+  	DTL_init(&period_layer, &window.layer, period_GRECT, period_FONT, _period_upd, _period_upd_cri);
 
   #if INCLUDE_CCD
-  TLayerCFG(cdate);
+  DTL_init(&cdate_layer, &window.layer, cdate_GRECT, cdate_FONT, _cdate_upd, _cdate_upd_cri);
   #endif
 
   #if INCLUDE_SEC
-  //TLayerCFG(sec);
   DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
 
@@ -81,28 +72,14 @@ void handle_init(AppContextRef ctx) {
 
 void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 {
-  static TextDrawn d = 0;
-
   date_layer.update(&date_layer, evt);
 
   time_layer.update(&time_layer, evt);
 
-  if( ( (evt->units_changed & HOUR_UNIT) || !(d & PERIOD_DRAWN) ) 
-		&& !clock_is_24h_style() )
-  {
-	
-	update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
-
-	d |= PERIOD_DRAWN;
-  }
+  period_layer.update(&period_layer, evt);
 
   #if INCLUDE_CCD
-  if( (evt->units_changed & HOUR_UNIT && evt->tick_time->tm_hour==23)
-		|| !(d & CDATE_DRAWN) )
-  {
-	update_textlayer(evt->tick_time,&text_cdate_layer,GenerateCDateText);
-	d |= CDATE_DRAWN;
-  }
+  cdate_layer.update(&cdate_layer, evt);
   #endif
 
   #if INCLUDE_SEC
