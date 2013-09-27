@@ -1,4 +1,5 @@
 #include "pebble_os.h"
+#include "DynTextLayer.h"
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -8,11 +9,13 @@ uint8_t GenerateCDateText(PblTm *, char*);
 
 uint8_t DateinZh(PblTm *, char*);
 
-uint8_t TimeText(PblTm *, char*); 
+void _time_upd(DynTextLayer*, PebbleTickEvent*); 
+bool _time_upd_cri(PebbleTickEvent*);
 
 uint8_t PeriodZh(PblTm *, char*); 
 
-uint8_t SecofTm(PblTm *, char*);
+void _sec_upd(DynTextLayer*, PebbleTickEvent*);
+bool _sec_upd_cri();
 
 
 typedef char byte;

@@ -1,6 +1,18 @@
 #include "DynTextLayer.h"
 
 
+void update(DynTextLayer *self, PebbleTickEvent* evt)
+{
+    if(self->is_first_update || self->upd_criteria(evt))
+    {
+	self->_upd_method(self,evt);
+	text_layer_set_text(&self->text_layer, self->content);
+    }
+
+    self->is_first_update = false;
+}
+
+
 void DTL_init(DynTextLayer* dtl, Layer* p, GRect f,  GFont font, void* um, void* uc)
 {
     text_layer_init(&(dtl->text_layer), p->frame); 
@@ -12,15 +24,18 @@ void DTL_init(DynTextLayer* dtl, Layer* p, GRect f,  GFont font, void* um, void*
 
     dtl->is_first_update = true;
 
-    dtl->update = (void(*)(DynTextLayer*,PebbleTickEvent*)) (um);
+    dtl->_upd_method = (void(*)(DynTextLayer*,PebbleTickEvent*)) (um);
+    dtl->update = update;
     dtl->upd_criteria = uc;
 }
 
 
 void DTL_mv_horz(DynTextLayer *dtl, int16_t dx)
 {
-    GRect r = layer_get_frame( &(dtl->text_layer.layer) );
+    GRect r = layer_get_frame( &dtl->text_layer.layer );
     r.origin.x += dx;
 
-    layer_set_frame( &(dtl->text_layer.layer), r);
+    layer_set_frame( &dtl->text_layer.layer, r);
 }
+
+

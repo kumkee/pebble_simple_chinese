@@ -1,5 +1,5 @@
 #include "main.h"
-#include "geometry.h"
+#include "config.h"
 
 bool rm_leading_0(char* str)
 {
@@ -148,17 +148,22 @@ uint8_t DateinZh(PblTm *t, char* txt)
 }
 
 
-uint8_t TimeText(PblTm *t, char* timetxt) 
+void _time_upd(DynTextLayer* self, PebbleTickEvent* evt) 
 {
     if(!clock_is_24h_style())
     {
-	string_format_time(timetxt, 6, "%I:%M", t);
-	rp_leading_0(timetxt);
+	string_format_time(self->content, 6, "%I:%M", evt->tick_time);
+	rp_leading_0(self->content);
     }
     else
-	string_format_time(timetxt, 6, "%R", t);
+	string_format_time(self->content, 6, "%R", evt->tick_time);
 	
-    return TIME_UID;
+}
+
+
+bool _time_upd_cri(PebbleTickEvent* evt)
+{
+    return evt->units_changed & MINUTE_UNIT;
 }
 
 
@@ -184,9 +189,22 @@ uint8_t PeriodZh(PblTm *t, char* p)
 
 
 #if INCLUDE_SEC
-uint8_t SecofTm(PblTm *t, char* s)
+void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt)
 {
-    string_format_time(s, 3, "%S", t);
-    return SECD_UID;
+    string_format_time(self->content, 3, "%S", evt->tick_time);
+
+    if(self->is_first_update && evt->tick_time->tm_hour%12>1 
+				&& evt->tick_time->tm_hour%12<10)
+	DTL_mv_horz(self, -11);
+    else if(evt->tick_time->tm_hour == 10 && evt->units_changed & HOUR_UNIT)
+	DTL_mv_horz(self, 11);
+    else if(evt->tick_time->tm_hour == 1 && evt->units_changed & HOUR_UNIT)
+	DTL_mv_horz(self, -11);
 }
+
+bool _sec_upd_cri(PebbleTickEvent* evt)
+{
+    return true;
+}
+
 #endif

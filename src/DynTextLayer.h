@@ -8,7 +8,8 @@ typedef struct{
     char content[TXTBUFFERSIZE];
     TextLayer text_layer;
     void (*update)();
-    void (*upd_criteria)();
+    void (*_upd_method)();
+    bool (*upd_criteria)(PebbleTickEvent*);
     bool is_first_update;
 } DynTextLayer;
 

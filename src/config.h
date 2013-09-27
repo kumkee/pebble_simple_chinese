@@ -3,7 +3,7 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		false	//whether to include second
+  #define INCLUDE_SEC		true	//whether to include second
 
   #define WHITE_BACKGROUND	false
   //These are default configurations
@@ -31,6 +31,7 @@
   #define sec_HEIGHT	20
   #define sec_POS_X	TOT_LENGTH - LEFT_MARGIN - sec_LENGTH
   #define sec_POS_Y	period_POS_Y + 19 + (clock_is_24h_style()?4:0)
+  #define sec_GRECT	GRect(sec_POS_X, sec_POS_Y, sec_LENGTH, sec_HEIGHT)
 
   #define time_POS_X_O	LEFT_MARGIN + period_LENGTH
   #define time_POS_X_R	LEFT_MARGIN
@@ -39,6 +40,7 @@
 //#define time_length_o	tot_length - left_margin +1 - time_pos_x - period_length 
   #define time_LENGTH	TOT_LENGTH //- 2*LEFT_MARGIN
   #define time_HEIGHT	TOT_HEIGHT - TOP_MARGIN - period_POS_Y
+  #define time_GRECT	GRect(time_POS_X, time_POS_Y, time_LENGTH, time_HEIGHT)
 
   #define date_LENGTH	TOT_LENGTH - 2*LEFT_MARGIN
   #define date_HEIGHT	29

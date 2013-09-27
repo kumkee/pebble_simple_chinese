@@ -2,8 +2,9 @@
 #include "pebble_app.h"
 #include "pebble_fonts.h"
 
-#include "geometry.h"
+#include "config.h"
 #include "main.h"
+#include "DynTextLayer.h"
 
 
 #define MY_UUID { 0x5B, 0x1A, 0xC5, 0x99, 0xBD, 0x60, 0x45, 0xBF, 0xA3, 0x67, 0x72, 0x53, 0xE5, 0x71, 0x55, 0xC6 }
@@ -17,14 +18,14 @@ Window window;
 
 Layer line_layer;
 
-TextLayer text_time_layer;
+DynTextLayer time_layer;
 TextLayer text_period_layer;
 TextLayer text_date_layer;
 #if INCLUDE_CCD
 TextLayer text_cdate_layer;
 #endif
 #if INCLUDE_SEC
-TextLayer text_sec_layer;
+DynTextLayer sec_layer;
 #endif
 
 
@@ -60,7 +61,7 @@ void handle_init(AppContextRef ctx) {
   line_layer.update_proc = &line_layer_update_callback;
   layer_add_child(&window.layer, &line_layer);
 
-  TLayerCFG(time);
+  DTL_init(&time_layer, &window.layer, time_GRECT, time_FONT, _time_upd, _time_upd_cri);
 
   TLayerCFG(date);
   
@@ -71,24 +72,11 @@ void handle_init(AppContextRef ctx) {
   #endif
 
   #if INCLUDE_SEC
-  TLayerCFG(sec);
+  //TLayerCFG(sec);
+  DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
 
 }
-
-#if INCLUDE_SEC
-void RelocateSecLayer(int hr, TextDrawn d)
-{
-  #ifndef RelocateSec
-  #define RelocateSec(x) layer_set_frame(&text_sec_layer.layer, GRect(x, sec_POS_Y, sec_LENGTH, sec_HEIGHT))
-  #endif
-  if( !(d & PERIOD_DRAWN) && hr%12>1 && hr%12<10 )
-  {   			 RelocateSec(sec_POS_X-11); }
-  else if(hr%12 == 10) { RelocateSec(sec_POS_X); }
-  else if(hr%12 == 1)  { RelocateSec(sec_POS_X-11); }
-  else	return;
-}
-#endif
 
 
 void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
@@ -101,18 +89,11 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 	d |= DATE_DRAWN;
   }
 
-  if( (evt->units_changed & MINUTE_UNIT) || !(d & TIME_DRAWN) )
-  {
-	update_textlayer(evt->tick_time,&text_time_layer,TimeText);
-	d |= TIME_DRAWN;
-  }
+  time_layer.update(&time_layer, evt);
 
   if( ( (evt->units_changed & HOUR_UNIT) || !(d & PERIOD_DRAWN) ) 
 		&& !clock_is_24h_style() )
   {
-	#if INCLUDE_SEC
-	RelocateSecLayer(evt->tick_time->tm_hour, d);
-	#endif
 	
 	update_textlayer(evt->tick_time,&text_period_layer,PeriodZh);
 
@@ -129,7 +110,7 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
   #endif
 
   #if INCLUDE_SEC
-  update_textlayer(evt->tick_time, &text_sec_layer, SecofTm);
+  sec_layer.update(&sec_layer, evt);
   #endif
 }
 
