@@ -75,7 +75,8 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 
   time_layer.update(&time_layer, evt);
 
-  period_layer.update(&period_layer, evt);
+  if(!clock_is_24h_style())
+	period_layer.update(&period_layer, evt);
 
   #if INCLUDE_CCD
   cdate_layer.update(&cdate_layer, evt);

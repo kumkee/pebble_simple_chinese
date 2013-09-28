@@ -114,8 +114,7 @@ void _period_upd(DynTextLayer* self, PebbleTickEvent* evt)
 
 bool _period_upd_cri(PebbleTickEvent* evt)
 {
-    return evt->units_changed & HOUR_UNIT
-			&& !clock_is_24h_style();
+    return evt->units_changed & HOUR_UNIT;
 }
 
 #if INCLUDE_SEC
@@ -123,13 +122,19 @@ void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt)
 {
     string_format_time(self->content, 3, "%S", evt->tick_time);
 
-    if(self->is_first_update && evt->tick_time->tm_hour%12>1 
-				&& evt->tick_time->tm_hour%12<10)
-	DTL_mv_horz(self, -11);
-    else if(evt->tick_time->tm_hour%12 == 10 && evt->units_changed & HOUR_UNIT)
-	DTL_mv_horz(self, 11);
-    else if(evt->tick_time->tm_hour%12 == 1 && evt->units_changed & HOUR_UNIT)
-	DTL_mv_horz(self, -11);
+    if(!clock_is_24h_style())
+    {
+	if(self->is_first_update && evt->tick_time->tm_hour%12 > 0 
+				&& evt->tick_time->tm_hour%12 < 10)
+	    DTL_mv_horz(self, -11);
+	else if(evt->units_changed & HOUR_UNIT)
+	{
+	    if(evt->tick_time->tm_hour%12 == 10)
+		DTL_mv_horz(self, 11);
+	    else if(evt->tick_time->tm_hour%12 == 1)
+		DTL_mv_horz(self, -11);
+	}
+    }
 }
 
 bool _sec_upd_cri(PebbleTickEvent* evt)
