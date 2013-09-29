@@ -86,6 +86,8 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
 	rm_leading_0(self->content);
 	static const int dx = INCLUDE_SEC ? 3 : 9;
 	static const int dy = INCLUDE_SEC ? -5: -3;
+	static const GFont fsmall = INCLUDE_SEC ? time_FONT_S: time_FONT_M;
+
 
 	if(self->is_first_update && evt->tick_time->tm_hour%12 > 0 
 				&& evt->tick_time->tm_hour%12 < 10)
@@ -98,7 +100,7 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
 	{
 	    if(evt->tick_time->tm_hour%12 == 10)
 	    {
-		text_layer_set_font(&self->text_layer, time_FONT_S);
+		text_layer_set_font(&self->text_layer, fsmall);
 	        DTL_mv_horz(self, -dx);
 	    	DTL_mv_vert(self, -dy);
 	    }
