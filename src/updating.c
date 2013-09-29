@@ -2,7 +2,7 @@
 #include "config.h"
 #include "lylunar.h"
 #include "utils.h"
-
+#include "pebble_app.h"
 
 
 
@@ -80,7 +80,38 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
     if(!clock_is_24h_style())
     {
 	string_format_time(self->content, 6, "%I:%M", evt->tick_time);
+	//string_format_time(self->content, 6, "%R", evt->tick_time);
+
+	#if INCLUDE_SEC
+	rm_leading_0(self->content);
+	static const int dx = 3;
+	static const int dy = -5;
+
+	if(self->is_first_update && evt->tick_time->tm_hour%12 > 0 
+				&& evt->tick_time->tm_hour%12 < 10)
+	{
+	    text_layer_set_font(&self->text_layer, time_FONT_L);
+	    DTL_mv_horz(self, dx);
+	    DTL_mv_vert(self, dy);
+	}
+	else if(evt->units_changed & HOUR_UNIT)
+	{
+	    if(evt->tick_time->tm_hour%12 == 10)
+	    {
+		text_layer_set_font(&self->text_layer, time_FONT_S);
+	        DTL_mv_horz(self, -dx);
+	    	DTL_mv_vert(self, -dy);
+	    }
+	    else if(evt->tick_time->tm_hour%12 == 1)
+	    {
+		text_layer_set_font(&self->text_layer, time_FONT_L);
+	        DTL_mv_horz(self, dx);
+	    	DTL_mv_vert(self, dy);
+	    }
+	}
+	#else
 	rp_leading_0(self->content);
+	#endif
     }
     else
 	string_format_time(self->content, 6, "%R", evt->tick_time);
@@ -122,19 +153,6 @@ void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt)
 {
     string_format_time(self->content, 3, "%S", evt->tick_time);
 
-    if(!clock_is_24h_style())
-    {
-	if(self->is_first_update && evt->tick_time->tm_hour%12 > 0 
-				&& evt->tick_time->tm_hour%12 < 10)
-	    DTL_mv_horz(self, -11);
-	else if(evt->units_changed & HOUR_UNIT)
-	{
-	    if(evt->tick_time->tm_hour%12 == 10)
-		DTL_mv_horz(self, 11);
-	    else if(evt->tick_time->tm_hour%12 == 1)
-		DTL_mv_horz(self, -11);
-	}
-    }
 }
 
 bool _sec_upd_cri(PebbleTickEvent* evt)

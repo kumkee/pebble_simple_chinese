@@ -3,7 +3,7 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		true	//whether to include second
+  #define INCLUDE_SEC		false	//whether to include second
 
   #define WHITE_BACKGROUND	false
   //These are default configurations
@@ -31,13 +31,14 @@
   #define sec_LENGTH	13
   #define sec_HEIGHT	20
   #define sec_POS_X	TOT_LENGTH - LEFT_MARGIN - sec_LENGTH
-  #define sec_POS_Y	period_POS_Y + 19 + (clock_is_24h_style()?4:0)
+  //#define sec_POS_Y	period_POS_Y + 19 + (clock_is_24h_style()?4:0)
+  #define sec_POS_Y	period_POS_Y + 23// + (clock_is_24h_style()?4:0)
   #define sec_GRECT	GRect(sec_POS_X, sec_POS_Y, sec_LENGTH, sec_HEIGHT)
 
   #define time_POS_X_O	LEFT_MARGIN + period_LENGTH
   #define time_POS_X_R	LEFT_MARGIN
   #define time_POS_X	clock_is_24h_style() ? time_POS_X_R : time_POS_X_O
-  #define time_POS_Y	LINE_POS_Y + (!clock_is_24h_style() && INCLUDE_SEC? 1:0)
+  #define time_POS_Y	LINE_POS_Y + (!clock_is_24h_style() && INCLUDE_SEC? 2:0)
 //#define time_length_o	tot_length - left_margin +1 - time_pos_x - period_length 
   #define time_LENGTH	TOT_LENGTH //- 2*LEFT_MARGIN
   #define time_HEIGHT	TOT_HEIGHT - TOP_MARGIN - period_POS_Y
@@ -55,12 +56,12 @@
   #define cdate_POS_Y	date_POS_Y - cdate_HEIGHT
   #define cdate_GRECT	GRect(cdate_POS_X, cdate_POS_Y, cdate_LENGTH, cdate_HEIGHT)
 
-  #define time_FONT_O_RS	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_45))
+  #define time_FONT_M	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_45))
   #define time_FONT_S	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_40))
-  #define time_FONT_R	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_49))
-  #define time_FONT	clock_is_24h_style() && !INCLUDE_SEC ? time_FONT_R : \
+  #define time_FONT_L	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_BOLD_49))
+  #define time_FONT	clock_is_24h_style() && !INCLUDE_SEC ? time_FONT_L : \
 				( !clock_is_24h_style() && INCLUDE_SEC ? time_FONT_S : \
-									time_FONT_O_RS ) \
+									time_FONT_M ) \
 
   #define period_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_16))
   #define date_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_21))
