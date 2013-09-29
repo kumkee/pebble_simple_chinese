@@ -82,7 +82,7 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
 	string_format_time(self->content, 6, "%I:%M", evt->tick_time);
 	//string_format_time(self->content, 6, "%R", evt->tick_time);
 
-	#if INCLUDE_SEC
+	//#if INCLUDE_SEC
 	rm_leading_0(self->content);
 	static const int dx = 3;
 	static const int dy = -5;
@@ -109,9 +109,9 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
 	    	DTL_mv_vert(self, dy);
 	    }
 	}
-	#else
-	rp_leading_0(self->content);
-	#endif
+	//#else
+	//rp_leading_0(self->content);
+	//#endif
     }
     else
 	string_format_time(self->content, 6, "%R", evt->tick_time);
