@@ -39,3 +39,12 @@ void DTL_mv_horz(DynTextLayer *dtl, int16_t dx)
 }
 
 
+void DTL_mv_vert(DynTextLayer *dtl, int16_t dy)
+{
+    GRect r = layer_get_frame( &dtl->text_layer.layer );
+    r.origin.y += dy;
+
+    layer_set_frame( &dtl->text_layer.layer, r);
+}
+
+

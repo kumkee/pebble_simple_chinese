@@ -1,14 +1,14 @@
 #!/bin/bash
 WF="simple_chinese"
 VM=2
-VS=1
+VS=2
 EXT='.pbw'
-GEO='src/config.h'
+CFG='src/config.h'
 MAIN="src/$WF.c"
 BLDCMD='./waf build'
 BLDDIR='build'
 STDBLD=$BLDDIR/$WF$EXT
-RDIR='releases'
+RDIR="releases/v$VM.$VS"
 line=(4 6 8)
 symb=(n s w)
 tt=(true false)
@@ -22,10 +22,10 @@ sed -i -e "s/1\,\ 0\,/$VM\,\ $VS\,/" $MAIN
 cp $MAIN $MAIN.tmp
 
 
-mv $GEO $GEO.sav
+mv $CFG $CFG.sav
 for l in ${line[@]}
 do
-   sed -i -e "${line[$i]}s/true/false/" $GEO.sav
+   sed -i -e "${l}s/true/false/" $CFG.sav
 done
 
 for t0 in ${tt[@]}
@@ -34,7 +34,7 @@ do
    do
 	for t2 in ${tt[@]}
 	do
-	   cp $GEO.sav $GEO
+	   cp $CFG.sav $CFG
 	   cp $MAIN.tmp $MAIN 
 	   uuid=`printf "0x%x\n" $(($uuid + 1))`
 	   sed -i -e "s/$uuid0/$uuid/" $MAIN
@@ -43,7 +43,7 @@ do
 	   do
 		var="t$i"
 		[ ${!var} = true ] && suf=$suf${symb[$i]}
-		sed -i -e "${line[$i]}s/false/${!var}/" $GEO
+		sed -i -e "${line[$i]}s/false/${!var}/" $CFG
 	   done
 	   if [ ! -z $suf ];then
 		sed -i -e "s/Chinese\",/Chinese $suf\",/" $MAIN
@@ -54,6 +54,6 @@ do
    done
 done
 
-mv $GEO.sav $GEO
+mv $CFG.sav $CFG
 mv $MAIN.sav $MAIN
 rm $MAIN.tmp
