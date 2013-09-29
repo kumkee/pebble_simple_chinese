@@ -84,8 +84,8 @@ void _time_upd(DynTextLayer* self, PebbleTickEvent* evt)
 
 	//#if INCLUDE_SEC
 	rm_leading_0(self->content);
-	static const int dx = 3;
-	static const int dy = -5;
+	static const int dx = INCLUDE_SEC ? 3 : 9;
+	static const int dy = INCLUDE_SEC ? -5: -3;
 
 	if(self->is_first_update && evt->tick_time->tm_hour%12 > 0 
 				&& evt->tick_time->tm_hour%12 < 10)
