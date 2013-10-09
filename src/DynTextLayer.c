@@ -9,7 +9,7 @@ void update(DynTextLayer *self, PebbleTickEvent* evt)
 	text_layer_set_text(&self->text_layer, self->content);
     }
 
-    self->is_first_update = false;
+    if(self->is_first_update) self->is_first_update = false;
 }
 
 

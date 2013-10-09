@@ -9,7 +9,7 @@ typedef struct{
     TextLayer text_layer;
     void (*update)();
     void (*_upd_method)();
-    bool (*upd_criteria)(PebbleTickEvent*);
+    bool (*upd_criteria)();
     bool is_first_update;
 } DynTextLayer;
 
