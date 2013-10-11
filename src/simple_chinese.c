@@ -27,6 +27,7 @@ DynTextLayer cdate_layer;
 DynTextLayer sec_layer;
 #endif
 
+HttpTextLayer weather_layer;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -65,6 +66,13 @@ void handle_init(AppContextRef ctx) {
   #if INCLUDE_SEC
   DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
+
+  HTTPCallbacks httpcallbacks = {
+	   .success = handle_success,
+	   .failure = handle_failed
+	};
+  HTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT,
+		_weather_upd, _weather_upd_cri, &httpcallbacks, (void*)&weather_layer);
 
 }
 

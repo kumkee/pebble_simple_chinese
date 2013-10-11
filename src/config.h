@@ -19,6 +19,12 @@
   #define LEFT_MARGIN	7
   #define TOP_MARGIN	LEFT_MARGIN
 
+  #define weather_POS_X	LEFT_MARGIN
+  #define weather_POS_Y	TOP_MARGIN
+  #define weather_LENGTH	TOT_LENGTH - 2*LEFT_MARGIN
+  #define weather_HEIGHT	20
+  #define weather_GRECT	GRect(weather_POS_X, weather_POS_Y, weather_LENGTH, weather_HEIGHT)
+  
   #define LINE_POS_X	LEFT_MARGIN
   #define LINE_POS_Y	97
 
@@ -67,6 +73,7 @@
   #define date_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_21))
   #define cdate_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_17))
   #define sec_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_CONDENSED_13))
+  #define weather_FONT	period_FONT
 
 
   #define MY_TICK_UNIT	INCLUDE_SEC ? SECOND_UNIT : MINUTE_UNIT

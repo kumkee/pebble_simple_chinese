@@ -24,7 +24,7 @@ void DTL_init(DynTextLayer* dtl, Layer* p, GRect f,  GFont font, void* um, void*
 
     dtl->is_first_update = true;
 
-    dtl->_upd_method = (void(*)(DynTextLayer*,PebbleTickEvent*)) (um);
+    dtl->_upd_method = um;
     dtl->update = update;
     dtl->upd_criteria = uc;
 }
