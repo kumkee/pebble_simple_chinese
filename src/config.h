@@ -6,8 +6,14 @@
   #define INCLUDE_SEC		false	//whether to include second
 
   #define WHITE_BACKGROUND	false
+
+//Celsius / Fahrenheit
+  #define UNIT_SYSTEM "c" // c or f
+
+  #define SERVER_URL "http://freeshell.de/~kumkee/weather.php" 
   //These are default configurations
 
+//-------------------------------------------------------------------------
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 
   #define WHITE_ON_BLACK	!WHITE_BACKGROUND
@@ -86,5 +92,17 @@
     #define BACKGROUNDCOLOR	GColorWhite
     #define CONTENTCOLOR	GColorBlack
   #endif
+
+// POST variables
+  #define WEATHER_KEY_LATITUDE 1
+  #define WEATHER_KEY_LONGITUDE 2
+  #define WEATHER_KEY_UNIT_SYSTEM 3
+	
+// Received variables
+  #define WEATHER_KEY_TEMPERATURE 1
+  #define WEATHER_CODE 4
+
+//mmm cookie
+  #define WEATHER_HTTP_COOKIE 1949999771
 
 #endif

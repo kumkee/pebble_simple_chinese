@@ -5,8 +5,13 @@
 #include "DynTextLayer.h"
 #include "http.h"
 
-typedef DynTextLayer HttpTextLayer;
+typedef struct{
+   DynTextLayer mydtl;
+   int lat;
+   int lng;
+   bool located;
+} HttpTextLayer;
 
-void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria, HTTPCallbacks* callbacks, void* ctx);
+void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria, HTTPCallbacks* callbacks);
 
 #endif

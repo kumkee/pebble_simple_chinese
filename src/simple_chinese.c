@@ -6,7 +6,8 @@
 #include "main.h"
 
 
-#define MY_UUID { 0x5B, 0x1A, 0xC5, 0x99, 0xBD, 0x60, 0x45, 0xBF, 0xA3, 0x67, 0x72, 0x53, 0xE5, 0x71, 0x55, 0xC6 }
+//#define MY_UUID { 0x5B, 0x1A, 0xC5, 0x99, 0xBD, 0x60, 0x45, 0xBF, 0xA3, 0x67, 0x72, 0x53, 0xE5, 0x71, 0x55, 0xC6 }
+#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x49, 0xC0, 0x90, 0xA0 }
 PBL_APP_INFO(MY_UUID,
              "Simple Chinese", "kumkee",
              1, 0, /* App version */
@@ -68,11 +69,13 @@ void handle_init(AppContextRef ctx) {
   #endif
 
   HTTPCallbacks httpcallbacks = {
-	   .success = handle_success,
-	   .failure = handle_failed
-	};
+    .success = handle_success,
+    .failure = handle_failed,
+    .location = handle_location,
+    .reconnect = handle_reconnect
+  };
   HTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT,
-		_weather_upd, _weather_upd_cri, &httpcallbacks, (void*)&weather_layer);
+		_weather_upd, _time_upd_cri, &httpcallbacks);
 
 }
 
@@ -102,6 +105,12 @@ void pbl_main(void *params) {
     .tick_info = {
       .tick_handler = &handle_minsec_tick,
       .tick_units = MY_TICK_UNIT
+    },
+    .messaging_info = {
+      .buffer_sizes = {
+	  .inbound = 124,
+	  .outbound = 256
+      }
     }
   };
   app_event_loop(params, &handlers);
