@@ -45,13 +45,13 @@
 
         {
         "type": "font",
-        "characterRegex": "[[0-9月日一二三四五六()]",
+        "characterRegex": "[0-9月日一二三四五六()]",
         "defName": "FONT_IPAG_21", "file": "fonts/ipag.ttf"
         },
 
         {
         "type": "font",
-        "characterRegex": "[[\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u5eff\u958f\u6b63\u6708\u521d]",
+        "characterRegex": "[\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u5eff\u958f\u6b63\u6708\u521d稍候離線 0-9℃℉龍捲風熱帶暴颶強雷雨雪夾凍結小陣光吹冰雹灰塵霧陰霾煙熏勁多冷雲晴間陽明媚朗零星大無法使用.-]",
         "defName": "FONT_IPAG_17",
         "file": "fonts/ipag.ttf"
         }

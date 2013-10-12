@@ -7,7 +7,7 @@
 
 
 //#define MY_UUID { 0x5B, 0x1A, 0xC5, 0x99, 0xBD, 0x60, 0x45, 0xBF, 0xA3, 0x67, 0x72, 0x53, 0xE5, 0x71, 0x55, 0xC6 }
-#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x49, 0xC0, 0x90, 0xA0 }
+#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x99, 0xC0, 0x90, 0xA0 }
 PBL_APP_INFO(MY_UUID,
              "Simple Chinese", "kumkee",
              1, 0, /* App version */
@@ -82,20 +82,22 @@ void handle_init(AppContextRef ctx) {
 
 void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 {
-  date_layer.update(&date_layer, evt);
+  date_layer.update(&date_layer, evt, &ctx);
 
-  time_layer.update(&time_layer, evt);
+  time_layer.update(&time_layer, evt, &ctx);
 
   if(!clock_is_24h_style())
-	period_layer.update(&period_layer, evt);
+	period_layer.update(&period_layer, evt, &ctx);
 
   #if INCLUDE_CCD
-  cdate_layer.update(&cdate_layer, evt);
+  cdate_layer.update(&cdate_layer, evt, &ctx);
   #endif
 
   #if INCLUDE_SEC
-  sec_layer.update(&sec_layer, evt);
+  sec_layer.update(&sec_layer, evt, &ctx);
   #endif
+
+  weather_layer.mydtl.update(&weather_layer.mydtl, evt, &weather_layer);
 }
 
 

@@ -1,4 +1,4 @@
-#include "main.h"
+#include "DynTextLayer.h"
 #include "config.h"
 #include "lylunar.h"
 #include "utils.h"
@@ -7,7 +7,7 @@
 
 
 #if INCLUDE_CCD
-void _cdate_upd(DynTextLayer* self, PebbleTickEvent* evt) 
+void _cdate_upd(DynTextLayer* self, PebbleTickEvent* evt, void* ctx) 
 {
   Date today;
 
@@ -29,7 +29,7 @@ bool _cdate_upd_cri(PebbleTickEvent* evt)
 #endif
 
 
-void _date_upd(DynTextLayer* self, PebbleTickEvent* evt) 
+void _date_upd(DynTextLayer* self, PebbleTickEvent* evt, void* ctx) 
 {
 	char mon_zh[] = "月";
 	char day_zh[] = "日";
@@ -75,7 +75,7 @@ bool _date_upd_cri(PebbleTickEvent* evt)
 
 
 
-void _time_upd(DynTextLayer* self, PebbleTickEvent* evt) 
+void _time_upd(DynTextLayer* self, PebbleTickEvent* evt, void* ctx) 
 {
     if(!clock_is_24h_style())
     {
@@ -126,7 +126,7 @@ bool _time_upd_cri(PebbleTickEvent* evt)
 }
 
 
-void _period_upd(DynTextLayer* self, PebbleTickEvent* evt) 
+void _period_upd(DynTextLayer* self, PebbleTickEvent* evt, void* ctx) 
 {
     if(evt->tick_time->tm_hour<5)
 	memcpy(self->content, "凌\n晨", 8);
@@ -150,7 +150,7 @@ bool _period_upd_cri(PebbleTickEvent* evt)
 }
 
 #if INCLUDE_SEC
-void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt)
+void _sec_upd(DynTextLayer *self, PebbleTickEvent* evt, void* ctx)
 {
     string_format_time(self->content, 3, "%S", evt->tick_time);
 

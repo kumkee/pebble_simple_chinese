@@ -3,10 +3,61 @@
 #define LOC_MAG	1000000
 #define this_htl ((HttpTextLayer*)htl)
 
+const char* WEATHER_CONDITION[] = {
+	"龍捲風",
+	"熱帶風暴",
+	"颶風",
+	"強雷暴",
+	"雷暴",
+	"雨雪",
+	"雨夾雪",
+	"雨夾雪",
+	"凍結小雨",
+	"小雨",
+	"凍雨",
+	"陣雨",
+	"陣雨",
+	"陣雪",
+	"光陣雪",
+	"吹雪",
+	"雪",
+	"冰雹",
+	"雨夾雪",
+	"灰塵",
+	"霧",
+	"陰霾",
+	"煙熏",
+	"勁風",
+	"多風",
+	"冷",
+	"多雲",
+	"晴間多雲",
+	"晴間多雲",
+	"晴間多雲",
+	"晴間多雲",
+	"晴",
+	"陽光明媚",
+	"晴朗",
+	"晴朗",
+	"雨夾冰雹",
+	"熱",
+	"雷暴",
+	"雷暴",
+	"雷暴",
+	"零星陣雨",
+	"大雪",
+	"零星陣雪",
+	"大雪",
+	"晴間多雲",
+	"雷陣雨",
+	"陣雪",
+	"雷陣雨",
+	"無法使用"
+    };
 
-void _weather_upd(HttpTextLayer* self)
+void request_weather(HttpTextLayer* htl)
 {
-   if(!self->located)	http_location_request();
+   if(!htl->located)	http_location_request();
 
    // Build the HTTP request
    DictionaryIterator *body;
@@ -14,20 +65,25 @@ void _weather_upd(HttpTextLayer* self)
    if(result != HTTP_OK) {
 	return;
    }
-   dict_write_int32(body, WEATHER_KEY_LATITUDE, self->lat);
-   dict_write_int32(body, WEATHER_KEY_LONGITUDE, self->lng);
+   dict_write_int32(body, WEATHER_KEY_LATITUDE, htl->lat);
+   dict_write_int32(body, WEATHER_KEY_LONGITUDE, htl->lng);
    dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
    // Send it.
    if(http_out_send() != HTTP_OK) {
 	return;
    }
-
 }
 
 
-bool _weather_upd_cri()
+void _weather_upd(DynTextLayer* dtl, PebbleTickEvent* evt, HttpTextLayer* htl)
 {
-   return true;
+   request_weather(htl);
+}
+
+
+bool _weather_upd_cri(PebbleTickEvent* evt)
+{
+   return evt->units_changed & MINUTE_UNIT && evt->tick_time->tm_min % 15 == 0;
 }
 
 
@@ -35,13 +91,13 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 {
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
-   static int16_t icon, temp;
+   static int16_t idx, temp;
 
-   Tuple* icon_tuple = dict_find(received, WEATHER_CODE);
-   if(icon_tuple) {
-   	icon = icon_tuple->value->int16;
-   	if(icon >= 0 && icon <= 48) {
-   	    //weather_layer_set_icon(&weather_layer, icon);
+   Tuple* idx_tuple = dict_find(received, WEATHER_CODE);
+   if(idx_tuple) {
+   	idx = idx_tuple->value->int16;
+   	if(idx >= 0 && idx <= 48) {
+   	    //weather_layer_set_idx(&weather_layer, idx);
    	} else {
    	    //weather_layer_set_error(&weather_layer, http_status);
    	}
@@ -54,18 +110,16 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    	//weather_layer_set_temperature(&weather_layer, temperature_tuple->value->int16);
    }
 
-   char s[10];
-
-   snprintf(s, 10, "%d %d", temp, icon);
-
-   text_layer_set_text(&this_htl->mydtl.text_layer, s);
+   snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "%s%d℃ ", WEATHER_CONDITION[idx], temp);
 
    return;
 }
 
 
-void handle_failed(int32_t cookie, int http_status, void* context)
+void handle_failed(int32_t cookie, int http_status, void* htl)
 {
+   snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "離線 ");
+
    return;
 }
 
@@ -77,6 +131,7 @@ void handle_location(float latitude, float longitude, float altitude, float accu
 }
 
 
-void handle_reconnect(void* context)
+void handle_reconnect(void* htl)
 {
+   request_weather(this_htl);
 }
