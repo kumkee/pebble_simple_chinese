@@ -1,6 +1,8 @@
 #include "weather.h"
+#include "utils.h"
 
 #define LOC_MAG	1000000
+#define UPD_FREQ 30	//weather update frequency in minute
 #define this_htl ((HttpTextLayer*)htl)
 
 const char* WEATHER_CONDITION[] = {
@@ -57,8 +59,6 @@ const char* WEATHER_CONDITION[] = {
 
 void request_weather(HttpTextLayer* htl)
 {
-   if(!htl->located)	http_location_request();
-
    // Build the HTTP request
    DictionaryIterator *body;
    HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
@@ -77,13 +77,15 @@ void request_weather(HttpTextLayer* htl)
 
 void _weather_upd(DynTextLayer* dtl, PebbleTickEvent* evt, HttpTextLayer* htl)
 {
+   if(!htl->located)	http_location_request();
+
    request_weather(htl);
 }
 
 
-bool _weather_upd_cri(PebbleTickEvent* evt)
+bool _weather_upd_cri(PebbleTickEvent* evt, HttpTextLayer* htl)
 {
-   return evt->units_changed & MINUTE_UNIT && evt->tick_time->tm_min % 15 == 0;
+   return evt->units_changed & MINUTE_UNIT && evt->tick_time->tm_min % UPD_FREQ == htl->init_time.tm_min;
 }
 
 
@@ -92,35 +94,44 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
    static int16_t idx, temp;
+   char str_now[6];
+   PblTm time_now;
+
+   get_time(&time_now);
+   string_format_time(str_now, sizeof(str_now), "%R", &time_now);
 
    Tuple* idx_tuple = dict_find(received, WEATHER_CODE);
    if(idx_tuple) {
    	idx = idx_tuple->value->int16;
-   	if(idx >= 0 && idx <= 48) {
-   	    //weather_layer_set_idx(&weather_layer, idx);
-   	} else {
-   	    //weather_layer_set_error(&weather_layer, http_status);
-   	}
+   	if(idx < 0 && idx > 47) 
+	   idx = 48;
    }
 
    Tuple* temperature_tuple = dict_find(received, WEATHER_KEY_TEMPERATURE);
-   if(temperature_tuple) {
+   if(temperature_tuple)
+   {
 	temp = temperature_tuple->value->int16;
-   	//weather_layer_set_highlow(&weather_layer, high, low);
-   	//weather_layer_set_temperature(&weather_layer, temperature_tuple->value->int16);
+	snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "(%s)%s%d%s ",
+		   str_now, WEATHER_CONDITION[idx], temp, *UNIT_SYSTEM=='c'?"℃":"℉");
    }
-
-   snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "%s%d℃ ", WEATHER_CONDITION[idx], temp);
-
-   return;
+   else
+   {
+	temp = 999;
+	snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "(%s)%s∞%s ",
+		   str_now, WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
+   }
 }
 
 
 void handle_failed(int32_t cookie, int http_status, void* htl)
 {
-   snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "離線 ");
-
-   return;
+   if(!this_htl->mydtl.is_first_update)
+	snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "離線 ");
+   else
+   {
+	rm_leading_n(this_htl->mydtl.content, 7);
+	left_append("(離線)",this_htl->mydtl.content, TXTBUFFERSIZE);
+   }
 }
 
 void handle_location(float latitude, float longitude, float altitude, float accuracy, void* htl)

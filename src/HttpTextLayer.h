@@ -10,6 +10,7 @@ typedef struct{
    int lat;
    int lng;
    bool located;
+   PblTm init_time;
 } HttpTextLayer;
 
 void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria, HTTPCallbacks* callbacks);

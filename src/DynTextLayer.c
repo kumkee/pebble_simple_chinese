@@ -8,7 +8,7 @@ void update(DynTextLayer *self, PebbleTickEvent* evt, void* ctx)
 	snprintf(self->content, TXTBUFFERSIZE, "稍候... ");
     }
 
-    if(self->is_first_update || self->upd_criteria(evt))
+    if(self->is_first_update || self->upd_criteria(evt, ctx))
     {
 	self->_upd_method(self, evt, ctx);
 	text_layer_set_text(&self->text_layer, self->content);

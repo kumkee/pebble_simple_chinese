@@ -1,6 +1,28 @@
 #include "lylunar.h"
 #include "pebble_os.h"
 
+int rm_leading_n(char* str, uint8_t n)
+{
+   if(strlen(str) < n)
+	return 1;
+   else
+   {
+	memmove(str, &str[n], strlen(str)-n+1);
+	return 0;
+   }
+}
+
+int left_append(char* added, char* targ, uint8_t tsize)
+{
+   if(strlen(added)+strlen(targ) > tsize)
+	return 1;
+   else
+   {
+	snprintf(targ, tsize, "%s%s", added, targ);
+	return 0;
+   }
+}
+
 bool rm_leading_0(char* str)
 {
    if(str[0] == '0')

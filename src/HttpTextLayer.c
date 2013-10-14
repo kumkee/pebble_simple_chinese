@@ -8,5 +8,7 @@ void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* 
 
    http_register_callbacks(*callbacks, htl);
 
+   get_time(&htl->init_time);
+
    htl->located = false;
 }
