@@ -7,15 +7,14 @@
 
 typedef struct{
    DynTextLayer mydtl;
-   char** context;
    int16_t lat;
    int16_t lng;
+   char _buf[TXTBUFFERSIZE];
    bool located;
    PblTm init_time;
-   bool* is_first_update;
    void (*update)();
    void (*_upd_method)();
-   bool (*upd_criteria)();
+   bool (*_upd_criteria)();
 } HttpTextLayer;
 
 #endif
