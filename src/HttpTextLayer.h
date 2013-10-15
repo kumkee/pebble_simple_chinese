@@ -1,18 +1,21 @@
 #ifndef HTL_H
 #define HTL_H
+
 #include "pebble_os.h"
-#include "config.h"
-#include "DynTextLayer.h"
 #include "http.h"
+#include "DynTextLayer.h"
 
 typedef struct{
    DynTextLayer mydtl;
-   int lat;
-   int lng;
+   char** context;
+   int16_t lat;
+   int16_t lng;
    bool located;
    PblTm init_time;
+   bool* is_first_update;
+   void (*update)();
+   void (*_upd_method)();
+   bool (*upd_criteria)();
 } HttpTextLayer;
-
-void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria, HTTPCallbacks* callbacks);
 
 #endif

@@ -1,16 +1,16 @@
 #include "DynTextLayer.h"
 
 
-void update(DynTextLayer *self, PebbleTickEvent* evt, void* ctx)
+void update(DynTextLayer *self, PebbleTickEvent* evt)
 {
     if(self->is_first_update)
     {
 	snprintf(self->content, TXTBUFFERSIZE, "稍候... ");
     }
 
-    if(self->is_first_update || self->upd_criteria(evt, ctx))
+    if(self->is_first_update || self->upd_criteria(evt))
     {
-	self->_upd_method(self, evt, ctx);
+	self->_upd_method(self, evt);
 	text_layer_set_text(&self->text_layer, self->content);
     }
 
