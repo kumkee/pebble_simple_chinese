@@ -2,11 +2,16 @@
 #define HTL_H
 #include "pebble_os.h"
 #include "config.h"
-#include "DynTextLayer.h"
 #include "http.h"
 
 typedef struct{
-   DynTextLayer mydtl;
+    char content[TXTBUFFERSIZE];
+    TextLayer text_layer;
+    void (*update)();
+    void (*_upd_method)();
+    bool (*upd_criteria)();
+    bool is_first_update;
+   char _buf[TXTBUFFERSIZE];
    int lat;
    int lng;
    bool located;

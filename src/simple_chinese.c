@@ -97,7 +97,7 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
   sec_layer.update(&sec_layer, evt, &ctx);
   #endif
 
-  weather_layer.mydtl.update(&weather_layer.mydtl, evt, &weather_layer);
+  weather_layer.update(&weather_layer, evt);
 }
 
 
