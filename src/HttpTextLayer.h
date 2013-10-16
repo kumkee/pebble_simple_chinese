@@ -17,4 +17,5 @@ typedef struct{
    bool (*_upd_criteria)();
 } HttpTextLayer;
 
+void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria, HTTPCallbacks* callbacks);
 #endif

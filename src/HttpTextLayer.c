@@ -8,7 +8,7 @@ void htl_update(HttpTextLayer *self, PebbleTickEvent* evt)
 	text_layer_set_text(&self->mydtl.text_layer, self->mydtl.content);
     }
 
-    if(self->mydtl.is_first_update || self->_upd_criteria(evt))
+    if(self->mydtl.is_first_update || self->_upd_criteria(evt, self))
     {
 	self->_upd_method(self, evt);
     }

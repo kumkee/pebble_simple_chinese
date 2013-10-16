@@ -28,8 +28,8 @@ DynTextLayer cdate_layer;
 DynTextLayer sec_layer;
 #endif
 
-//HttpTextLayer weather_layer;
-DynTextLayer weather_layer;
+HttpTextLayer weather_layer;
+//DynTextLayer weather_layer;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -69,9 +69,8 @@ void handle_init(AppContextRef ctx) {
   DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
 
-  DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
+  //DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
 
-  /*
   HTTPCallbacks httpcallbacks = {
     .success = handle_success,
     .failure = handle_failed,
@@ -79,27 +78,26 @@ void handle_init(AppContextRef ctx) {
     .reconnect = handle_reconnect
   };
   HTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT,
-		_weather_upd, _time_upd_cri, &httpcallbacks);
-  */
+		_weather_upd, _weather_upd_cri, &httpcallbacks);
 
 }
 
 
 void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 {
-  date_layer.update(&date_layer, evt, ctx);
+  date_layer.update(&date_layer, evt);
 
-  time_layer.update(&time_layer, evt, ctx);
+  time_layer.update(&time_layer, evt);
 
   if(!clock_is_24h_style())
-	period_layer.update(&period_layer, evt, ctx);
+	period_layer.update(&period_layer, evt);
 
   #if INCLUDE_CCD
-  cdate_layer.update(&cdate_layer, evt, ctx);
+  cdate_layer.update(&cdate_layer, evt);
   #endif
 
   #if INCLUDE_SEC
-  sec_layer.update(&sec_layer, evt, ctx);
+  sec_layer.update(&sec_layer, evt);
   #endif
 
   weather_layer.update(&weather_layer, evt, ctx);
