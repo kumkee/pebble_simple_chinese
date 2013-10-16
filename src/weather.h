@@ -2,7 +2,7 @@
 #define WEATHER_H
 #include "HttpTextLayer.h"
 
-void request_weather(HttpTextLayer* htl);
+//void request_weather(HttpTextLayer* htl, PebbleTickEvent* evt);
 
 
 void _weather_upd(HttpTextLayer* htl, PebbleTickEvent* evt);

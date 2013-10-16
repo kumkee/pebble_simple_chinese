@@ -30,6 +30,12 @@
   #define weather_LENGTH	TOT_LENGTH - LEFT_MARGIN
   #define weather_HEIGHT	20
   #define weather_GRECT	GRect(weather_POS_X, weather_POS_Y, weather_LENGTH, weather_HEIGHT)
+
+  #define debug_POS_X	LEFT_MARGIN
+  #define debug_POS_Y	TOP_MARGIN + weather_LENGTH
+  #define debug_LENGTH	TOT_LENGTH - LEFT_MARGIN
+  #define debug_HEIGHT	20
+  #define debug_GRECT	GRect(debug_POS_X, debug_POS_Y, debug_LENGTH, debug_HEIGHT)
   
   #define LINE_POS_X	LEFT_MARGIN
   #define LINE_POS_Y	97
@@ -80,6 +86,7 @@
   #define cdate_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_17))
   #define sec_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_CONDENSED_13))
   #define weather_FONT	cdate_FONT
+  #define debug_FONT	cdate_FONT
 
 
   #define MY_TICK_UNIT	INCLUDE_SEC ? SECOND_UNIT : MINUTE_UNIT

@@ -11,6 +11,7 @@ void htl_update(HttpTextLayer *self, PebbleTickEvent* evt)
     if(self->mydtl.is_first_update || self->_upd_criteria(evt, self))
     {
 	self->_upd_method(self, evt);
+	text_layer_set_text(&self->mydtl.text_layer, self->mydtl.content);
     }
 
     self->mydtl.is_first_update = false;

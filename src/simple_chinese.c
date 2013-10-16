@@ -31,6 +31,8 @@ DynTextLayer sec_layer;
 HttpTextLayer weather_layer;
 //DynTextLayer weather_layer;
 
+DynTextLayer debug_layer;
+
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
   graphics_context_set_stroke_color(ctx, CONTENTCOLOR);
@@ -69,7 +71,7 @@ void handle_init(AppContextRef ctx) {
   DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
 
-  //DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
+  DTL_init(&debug_layer, &window.layer, debug_GRECT, debug_FONT, NULL, NULL);
 
   HTTPCallbacks httpcallbacks = {
     .success = handle_success,
@@ -100,7 +102,7 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
   sec_layer.update(&sec_layer, evt);
   #endif
 
-  weather_layer.update(&weather_layer, evt, ctx);
+  weather_layer.update(&weather_layer, evt);
   //weather_layer.mydtl.update(&weather_layer.mydtl, evt, &weather_layer);
 }
 
