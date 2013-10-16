@@ -6,12 +6,14 @@ void htl_update(HttpTextLayer *self, PebbleTickEvent* evt)
     {
 	snprintf(self->content, TXTBUFFERSIZE, "稍候... ");
 	text_layer_set_text(&self->text_layer, self->content);
+	self->_upd_method(self, evt);
     }
-
-    if(self->is_first_update || self->upd_criteria(evt, self))
+    else if(self->upd_criteria(evt, self))
     {
 	self->_upd_method(self, evt);
     }
+
+    //if(self->is_first_update || self->upd_criteria(evt, self))
 
     self->is_first_update = false;
 }

@@ -93,7 +93,7 @@ void _weather_upd(HttpTextLayer* htl, PebbleTickEvent* evt)
 
 bool _weather_upd_cri(PebbleTickEvent* evt, HttpTextLayer* htl)
 {
-   return evt->units_changed & MINUTE_UNIT && evt->tick_time->tm_min % UPD_FREQ == 0;
+   return evt->units_changed & MINUTE_UNIT && (evt->tick_time->tm_min - htl->init_time.tm_min) % UPD_FREQ == 0;
 }
 
 
