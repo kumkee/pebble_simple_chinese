@@ -8,10 +8,11 @@ void htl_update(HttpTextLayer *self, PebbleTickEvent* evt)
 	text_layer_set_text(&self->mydtl.text_layer, self->mydtl.content);
     }
 
-    if(self->mydtl.is_first_update || self->_upd_criteria(evt, self))
+    //if(self->mydtl.is_first_update || self->_upd_criteria(evt, self))
+    if(self->_upd_criteria(evt, self))
     {
 	self->_upd_method(self, evt);
-	text_layer_set_text(&self->mydtl.text_layer, self->mydtl.content);
+	//text_layer_set_text(&self->mydtl.text_layer, self->mydtl.content);
     }
 
     self->mydtl.is_first_update = false;
@@ -23,6 +24,8 @@ void HTL_init(HttpTextLayer* htl, Layer* parent, GRect frame, GFont font, void* 
    DTL_init(&htl->mydtl, parent, frame, font, NULL, NULL);
 
    text_layer_set_text_alignment(&htl->mydtl.text_layer, GTextAlignmentRight);
+ 
+   http_set_app_id(0xbf7ccb5b);
 
    http_register_callbacks(*callbacks, htl);
 

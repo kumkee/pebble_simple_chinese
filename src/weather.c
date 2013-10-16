@@ -63,6 +63,8 @@ void request_weather(HttpTextLayer* htl)
    DictionaryIterator *body;
    HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
    if(result != HTTP_OK) {
+   	snprintf(htl->mydtl.content, TXTBUFFERSIZE, "0:%X ", result);
+   	text_layer_set_text(&htl->mydtl.text_layer, htl->mydtl.content);
 	return;
    }
    dict_write_int32(body, WEATHER_KEY_LATITUDE, htl->lat);
@@ -70,10 +72,12 @@ void request_weather(HttpTextLayer* htl)
    dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
    // Send it.
    if(http_out_send() != HTTP_OK) {
+   	snprintf(htl->mydtl.content, TXTBUFFERSIZE, "1:%X ", result);
+   	text_layer_set_text(&htl->mydtl.text_layer, htl->mydtl.content);
 	return;
    }
-   static uint16_t c = 0;
 /*
+   static uint16_t c = 0;
    char tmp[] = "00:00";
    string_format_time(tmp, 6, "%R", &htl->init_time);
    string_format_time(htl->_buf, TXTBUFFERSIZE, "%R", evt->tick_time);
@@ -132,7 +136,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
  
    snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "(%s)%s ",
 		str_now, this_htl->_buf);
-   //text_layer_set_text(&this_htl->mydtl.text_layer, this_htl->mydtl.content);
+   text_layer_set_text(&this_htl->mydtl.text_layer, this_htl->mydtl.content);
 }
 
 
@@ -145,7 +149,7 @@ void handle_failed(int32_t cookie, int http_status, void* htl)
    	snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "(%s)%s ",
 		"離線", this_htl->_buf);
    }
-   //text_layer_set_text(&this_htl->mydtl.text_layer, this_htl->mydtl.content);
+   text_layer_set_text(&this_htl->mydtl.text_layer, this_htl->mydtl.content);
 }
 
 void handle_location(float latitude, float longitude, float altitude, float accuracy, void* htl)
