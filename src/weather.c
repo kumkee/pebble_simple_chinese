@@ -67,8 +67,7 @@ const char* WEATHER_CONDITION[] = {
 
 void request_weather()
 {
-   snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", ++w, s, count);/////////////
-   text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+   DTL_printf(&debug_layer, "%d %d %d", ++w, s, count);/////////////
 
    if(!located)	http_location_request();
 
@@ -107,8 +106,7 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
    if(evt->units_changed & MINUTE_UNIT)
    {
 	count++;
-	snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", w, s, count);/////////////
-	text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+	DTL_printf(&debug_layer, "%d %d %d", w, s, count);/////////////
    
 	if(count % UPD_FREQ == 0)
 	{
@@ -126,8 +124,7 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
 
 void handle_success(int32_t cookie, int http_status, DictionaryIterator* received, void* context)
 {
-   snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", w, ++s, count);/////////////
-   text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+   DTL_printf(&debug_layer, "%d %d %d", w, ++s, count);/////////////
 
    if(cookie != WEATHER_HTTP_COOKIE) return;
 

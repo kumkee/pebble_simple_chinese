@@ -18,6 +18,9 @@ void DTL_init(DynTextLayer* dtl, Layer* parent, GRect frame, GFont font, void* u
 void DTL_mv_horz(DynTextLayer*, int16_t);
 void DTL_mv_vert(DynTextLayer*, int16_t);
 
-void DTL_printf(DynTextLayer* dtl, const char* fmt, ...);
+#define DTL_printf(dtl, fmt, ...) \
+	   snprintf((dtl)->content, TXTBUFFERSIZE, fmt, __VA_ARGS__); \
+	   text_layer_set_text(&(dtl)->text_layer, (dtl)->content);
+
 #endif
 
