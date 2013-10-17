@@ -3,7 +3,7 @@
 
 void update(DynTextLayer *self, PebbleTickEvent* evt)
 {
-    if(self->is_first_update || self->upd_criteria(evt))
+    if(self->is_first_update || self->_upd_criteria(evt))
     {
 	self->_upd_method(self,evt);
 	text_layer_set_text(&self->text_layer, self->content);
@@ -26,7 +26,7 @@ void DTL_init(DynTextLayer* dtl, Layer* p, GRect f,  GFont font, void* um, void*
 
     dtl->_upd_method = (void(*)(DynTextLayer*,PebbleTickEvent*)) (um);
     dtl->update = update;
-    dtl->upd_criteria = uc;
+    dtl->_upd_criteria = uc;
 }
 
 
