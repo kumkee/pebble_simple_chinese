@@ -1,8 +1,8 @@
-#include "main.h"
 #include "config.h"
 #include "lylunar.h"
 #include "utils.h"
-#include "pebble_app.h"
+#include "DynTextLayer.h"
+#include "pebble_app.h" //for resource-font
 
 
 

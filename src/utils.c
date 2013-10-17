@@ -1,5 +1,5 @@
 #include "lylunar.h"
-#include "pebble_os.h"
+#include "utils.h"
 
 bool rm_leading_0(char* str)
 {

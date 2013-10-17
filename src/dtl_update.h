@@ -1,7 +1,5 @@
-#include "pebble_os.h"
-#include "DynTextLayer.h"
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef DTL_UPD_H
+#define DTL_UPD_H
 
 void _cdate_upd(DynTextLayer*, PebbleTickEvent*); 
 bool _cdate_upd_cri(PebbleTickEvent*);

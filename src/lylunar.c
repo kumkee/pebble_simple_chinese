@@ -65,7 +65,7 @@ References:
 //#include <stdlib.h>
 //#include <stdio.h>
 #include "lylunar.h"
-#include "tables.h"
+#include "lytables.h"
 
 
 static int daysInSolarMonth[13] = {
