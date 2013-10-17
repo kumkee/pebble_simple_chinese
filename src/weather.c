@@ -1,9 +1,12 @@
 #include "weather.h"
 
 #define LOC_MAG	1000000
-#define UPD_FREQ 3	//weather update frequency in minute
+#define UPD_FREQ 30	//weather update frequency in minute
 
-extern DynTextLayer weather_layer, debug_layer;
+extern DynTextLayer weather_layer, debug_layer, info_layer;
+#if DEBUG
+extern DynTextLayer debug_layer;
+#endif
 
 int w = 0, s = 0;/////////////////
 static int count = 0;/////////////
@@ -67,29 +70,27 @@ const char* WEATHER_CONDITION[] = {
 
 void request_weather()
 {
+   #if DEBUG
    DTL_printf(&debug_layer, "%d %d %d", ++w, s, count);/////////////
+   #endif
 
    if(!located)	http_location_request();
 
    // Build the HTTP request
    DictionaryIterator *body;
-   //HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
-   http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
-   /*
+   HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
+   //http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
    if(result != HTTP_OK) {
 	return;
    }
-   */
+
    dict_write_int32(body, WEATHER_KEY_LATITUDE, lat);
    dict_write_int32(body, WEATHER_KEY_LONGITUDE, lng);
    dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
    // Send it.
-   http_out_send();
-   /*
    if(http_out_send() != HTTP_OK) {
 	return;
    }
-   */
 }
 
 
@@ -119,7 +120,9 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
    #endif
    {
 	count++;
+        #if DEBUG
 	DTL_printf(&debug_layer, "%d %d %d", w, s, count);/////////////
+	#endif
    
 	if(count % UPD_FREQ == 0)
 	{
@@ -137,7 +140,9 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
 
 void handle_success(int32_t cookie, int http_status, DictionaryIterator* received, void* context)
 {
+   #if DEBUG
    DTL_printf(&debug_layer, "%d %d %d", w, ++s, count);/////////////
+   #endif
 
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
@@ -159,24 +164,25 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    if(temperature_tuple)
    {
 	temp = temperature_tuple->value->int16;
-	snprintf(weather_layer.content, TXTBUFFERSIZE, "(%s)%s%d%s ",
-		   str_now, WEATHER_CONDITION[idx], temp, *UNIT_SYSTEM=='c'?"℃":"℉");
+	DTL_printf(&weather_layer, "%s%d%s ",
+		    WEATHER_CONDITION[idx], temp, *UNIT_SYSTEM=='c'?"℃":"℉");
    }
    else
    {
 	temp = 999;
-	snprintf(weather_layer.content, TXTBUFFERSIZE, "(%s)%s∞%s ",
-		   str_now, WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
+	DTL_printf(&weather_layer, "%s∞%s ",
+		   WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
    }
-
-   text_layer_set_text(&weather_layer.text_layer, weather_layer.content);
+   DTL_printf(&info_layer, "%s ", str_now);
 }
 
 
 void handle_failed(int32_t cookie, int http_status, void* htl)
 {
-   snprintf(weather_layer.content, TXTBUFFERSIZE, "離線 ");
-   text_layer_set_text(&weather_layer.text_layer, weather_layer.content);
+
+   DTL_printf(&info_layer, "離線 ");
+   //snprintf(weather_layer.content, TXTBUFFERSIZE, "離線 ");
+   //text_layer_set_text(&weather_layer.text_layer, weather_layer.content);
 }
 
 

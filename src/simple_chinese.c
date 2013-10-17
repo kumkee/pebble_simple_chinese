@@ -23,7 +23,10 @@ DynTextLayer sec_layer;
 #endif
 
 DynTextLayer weather_layer;
+DynTextLayer info_layer;
+#if DEBUG
 DynTextLayer debug_layer;
+#endif
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -64,7 +67,14 @@ void handle_init(AppContextRef ctx) {
   #endif
 
   DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
+  DTL_set_alignment(&weather_layer, GTextAlignmentRight);
+
+  #if DEBUG
   DTL_init(&debug_layer, &window.layer, debug_GRECT, debug_FONT, NULL, NULL);
+  #endif
+
+  DTL_init(&info_layer, &window.layer, info_GRECT, info_FONT, NULL, NULL);
+  DTL_set_alignment(&info_layer, GTextAlignmentRight);
 
   http_set_app_id(HTTP_APP_ID);
   HTTPCallbacks httpcallbacks = {
@@ -75,7 +85,6 @@ void handle_init(AppContextRef ctx) {
   };
   http_register_callbacks(httpcallbacks, ctx);
 
-  //request_weather();
 }
 
 

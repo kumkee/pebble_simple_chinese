@@ -14,6 +14,7 @@
   //These are default configurations
 
 //-------------------------------------------------------------------------
+  #define DEBUG	1
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 
   #define WHITE_ON_BLACK	!WHITE_BACKGROUND
@@ -33,9 +34,22 @@
 
   #define debug_POS_X	LEFT_MARGIN
   #define debug_POS_Y	TOP_MARGIN + weather_HEIGHT
-  #define debug_LENGTH	TOT_LENGTH - LEFT_MARGIN
+  #define debug_LENGTH	TOT_LENGTH/2 - LEFT_MARGIN
   #define debug_HEIGHT	weather_HEIGHT
   #define debug_GRECT	GRect(debug_POS_X, debug_POS_Y, debug_LENGTH, debug_HEIGHT)
+  
+  #define info_POS_X	LEFT_MARGIN
+  #define info_POS_Y	TOP_MARGIN + weather_HEIGHT
+  #define info_LENGTH	TOT_LENGTH - LEFT_MARGIN
+  #define info_HEIGHT	weather_HEIGHT
+  #define info_GRECT	GRect(info_POS_X, info_POS_Y, info_LENGTH, info_HEIGHT)
+/*
+  #define info_POS_X	0//TOT_LENGTH/2
+  #define info_POS_Y	weather_POS_Y
+  #define info_LENGTH	TOT_LENGTH/2
+  #define info_HEIGHT	weather_HEIGHT
+  #define info_GRECT	GRect(info_POS_X, info_POS_Y, info_LENGTH, info_HEIGHT)
+*/
   
   #define LINE_POS_X	LEFT_MARGIN
   #define LINE_POS_Y	97
@@ -87,6 +101,7 @@
   #define sec_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_CONDENSED_13))
   #define weather_FONT	cdate_FONT
   #define debug_FONT	cdate_FONT
+  #define info_FONT	cdate_FONT
 
 
   #define MY_TICK_UNIT	INCLUDE_SEC ? SECOND_UNIT : MINUTE_UNIT
