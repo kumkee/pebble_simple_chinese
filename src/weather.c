@@ -95,6 +95,7 @@ void request_weather()
 
 void _weather_upd(DynTextLayer* dtl, PebbleTickEvent* evt)
 {
+   //if(dtl->is_first_update) psleep(1000);
    request_weather();
 }
 
@@ -102,8 +103,20 @@ void _weather_upd(DynTextLayer* dtl, PebbleTickEvent* evt)
 bool _weather_upd_cri(PebbleTickEvent* evt)
 {
    //static int count = 0;
+   #if INCLUDE_SEC
+   static int init_sec;
+   static bool firstcall = true;
+   if(firstcall){
+	init_sec = evt->tick_time->tm_sec;
+	firstcall = false;
+   }
+   #endif
 
+   #if INCLUDE_SEC
+   if(evt->tick_time->tm_sec == init_sec)
+   #else
    if(evt->units_changed & MINUTE_UNIT)
+   #endif
    {
 	count++;
 	DTL_printf(&debug_layer, "%d %d %d", w, s, count);/////////////
@@ -172,6 +185,7 @@ void handle_location(float latitude, float longitude, float altitude, float accu
    lat = latitude * LOC_MAG;
    lng = longitude * LOC_MAG;
    located = true;
+   request_weather();
 }
 
 

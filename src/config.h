@@ -112,4 +112,7 @@
 //mmm cookie
   #define WEATHER_HTTP_COOKIE 1949999771
 
+// HTTP app id
+  #define HTTP_APP_ID 0xbc8495c3
+
 #endif

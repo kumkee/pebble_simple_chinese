@@ -66,7 +66,7 @@ void handle_init(AppContextRef ctx) {
   DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
   DTL_init(&debug_layer, &window.layer, debug_GRECT, debug_FONT, NULL, NULL);
 
-  http_set_app_id(0xbc8495c3);
+  http_set_app_id(HTTP_APP_ID);
   HTTPCallbacks httpcallbacks = {
     .success = handle_success,
     .failure = handle_failed,
@@ -75,7 +75,7 @@ void handle_init(AppContextRef ctx) {
   };
   http_register_callbacks(httpcallbacks, ctx);
 
-  request_weather();
+  //request_weather();
 }
 
 
