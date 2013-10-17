@@ -8,5 +8,6 @@
 #include "config.h"
 #include "DynTextLayer.h"
 #include "dtl_update.h"
+#include "weather.h"
 
 #endif

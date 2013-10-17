@@ -1,4 +1,5 @@
 #include "DynTextLayer.h"
+#include "stdarg.h"
 
 
 void update(DynTextLayer *self, PebbleTickEvent* evt)
@@ -45,4 +46,15 @@ void DTL_mv_vert(DynTextLayer *dtl, int16_t dy)
     r.origin.y += dy;
 
     layer_set_frame( &dtl->text_layer.layer, r);
+}
+
+
+void DTL_printf(DynTextLayer* dtl, const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(dtl->content, TXTBUFFERSIZE, fmt, args);
+    va_end(args);
+
+    text_layer_set_text(&dtl->text_layer, dtl->content);
 }

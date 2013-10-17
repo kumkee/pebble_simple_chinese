@@ -22,6 +22,7 @@ DynTextLayer cdate_layer;
 DynTextLayer sec_layer;
 #endif
 
+DynTextLayer weather_layer;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -61,6 +62,17 @@ void handle_init(AppContextRef ctx) {
   DTL_init(&sec_layer, &window.layer, sec_GRECT, sec_FONT, _sec_upd, _sec_upd_cri);
   #endif
 
+  DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
+
+  http_set_app_id(0xbc8495c3);
+  HTTPCallbacks httpcallbacks = {
+    .success = handle_success,
+    .failure = handle_failed,
+    .location = handle_location,
+    .reconnect = handle_reconnect
+  };
+  http_register_callbacks(httpcallbacks, ctx);
+
 }
 
 
@@ -80,6 +92,8 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
   #if INCLUDE_SEC
   sec_layer.update(&sec_layer, evt);
   #endif
+
+  weather_layer.update(&weather_layer, evt);
 }
 
 

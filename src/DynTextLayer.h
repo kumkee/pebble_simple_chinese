@@ -13,9 +13,11 @@ typedef struct{
     bool is_first_update;
 } DynTextLayer;
 
+void DTL_init(DynTextLayer* dtl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria);
+
 void DTL_mv_horz(DynTextLayer*, int16_t);
 void DTL_mv_vert(DynTextLayer*, int16_t);
 
-void DTL_init(DynTextLayer* dtl, Layer* parent, GRect frame, GFont font, void* u_method, void* u_criteria);
+void DTL_printf(DynTextLayer* dtl, const char* fmt, ...);
 #endif
 
