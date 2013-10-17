@@ -3,11 +3,17 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		false	//whether to include second
+  #define INCLUDE_SEC		true	//whether to include second
 
   #define WHITE_BACKGROUND	false
+
+//Celsius / Fahrenheit
+  #define UNIT_SYSTEM "c" // c or f
+
+  #define SERVER_URL "http://kumkee.ceio.pw/weather.php" 
   //These are default configurations
 
+//-------------------------------------------------------------------------
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 
   #define WHITE_ON_BLACK	!WHITE_BACKGROUND
@@ -19,6 +25,12 @@
   #define LEFT_MARGIN	7
   #define TOP_MARGIN	LEFT_MARGIN
 
+  #define weather_POS_X	LEFT_MARGIN
+  #define weather_POS_Y	TOP_MARGIN
+  #define weather_LENGTH	TOT_LENGTH - LEFT_MARGIN
+  #define weather_HEIGHT	20
+  #define weather_GRECT	GRect(weather_POS_X, weather_POS_Y, weather_LENGTH, weather_HEIGHT)
+  
   #define LINE_POS_X	LEFT_MARGIN
   #define LINE_POS_Y	97
 
@@ -67,6 +79,7 @@
   #define date_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_21))
   #define cdate_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_17))
   #define sec_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_CONDENSED_13))
+  #define weather_FONT	cdate_FONT
 
 
   #define MY_TICK_UNIT	INCLUDE_SEC ? SECOND_UNIT : MINUTE_UNIT
@@ -79,5 +92,17 @@
     #define BACKGROUNDCOLOR	GColorWhite
     #define CONTENTCOLOR	GColorBlack
   #endif
+
+// POST variables
+  #define WEATHER_KEY_LATITUDE 1
+  #define WEATHER_KEY_LONGITUDE 2
+  #define WEATHER_KEY_UNIT_SYSTEM 3
+	
+// Received variables
+  #define WEATHER_KEY_TEMPERATURE 1
+  #define WEATHER_CODE 4
+
+//mmm cookie
+  #define WEATHER_HTTP_COOKIE 1949999771
 
 #endif
