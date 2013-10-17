@@ -2,7 +2,7 @@
 #include "utils.h"
 
 #define LOC_MAG	1000000
-#define UPD_FREQ 30	//weather update frequency in minute
+#define UPD_FREQ 3	//weather update frequency in minute
 #define this_htl ((HttpTextLayer*)htl)
 
 const char* WEATHER_CONDITION[] = {
@@ -59,6 +59,13 @@ const char* WEATHER_CONDITION[] = {
 
 void request_weather(HttpTextLayer* htl)
 {
+   static uint8_t count = 0;
+   
+   if(count++%UPD_FREQ == 0)
+	count = 0;
+   else
+        return;
+
    // Build the HTTP request
    DictionaryIterator *body;
    HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
@@ -125,13 +132,15 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 
 void handle_failed(int32_t cookie, int http_status, void* htl)
 {
-   if(!this_htl->mydtl.is_first_update)
+   //if(!this_htl->mydtl.is_first_update)
 	snprintf(this_htl->mydtl.content, TXTBUFFERSIZE, "離線 ");
+   /*
    else
    {
 	rm_leading_n(this_htl->mydtl.content, 7);
 	left_append("(離線)",this_htl->mydtl.content, TXTBUFFERSIZE);
    }
+   */
 }
 
 void handle_location(float latitude, float longitude, float altitude, float accuracy, void* htl)

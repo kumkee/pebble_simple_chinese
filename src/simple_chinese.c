@@ -77,6 +77,7 @@ void handle_init(AppContextRef ctx) {
   HTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT,
 		_weather_upd, _time_upd_cri, &httpcallbacks);
 
+  //request_weather(&weather_layer);
 }
 
 
