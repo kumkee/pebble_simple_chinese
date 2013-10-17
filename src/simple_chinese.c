@@ -1,7 +1,7 @@
 #include "headers.h"
 
 
-#define MY_UUID { 0x5B, 0x1A, 0xC5, 0x99, 0xBD, 0x60, 0x45, 0xBF, 0xA3, 0x67, 0x72, 0x53, 0xE5, 0x71, 0x55, 0xC6 }
+#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x99, 0xC0, 0x90, 0xA0 }
 PBL_APP_INFO(MY_UUID,
              "Simple Chinese", "kumkee",
              1, 0, /* App version */
@@ -23,6 +23,7 @@ DynTextLayer sec_layer;
 #endif
 
 DynTextLayer weather_layer;
+DynTextLayer debug_layer;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -63,6 +64,7 @@ void handle_init(AppContextRef ctx) {
   #endif
 
   DTL_init(&weather_layer, &window.layer, weather_GRECT, weather_FONT, _weather_upd, _weather_upd_cri);
+  DTL_init(&debug_layer, &window.layer, debug_GRECT, debug_FONT, NULL, NULL);
 
   http_set_app_id(0xbc8495c3);
   HTTPCallbacks httpcallbacks = {
@@ -73,6 +75,7 @@ void handle_init(AppContextRef ctx) {
   };
   http_register_callbacks(httpcallbacks, ctx);
 
+  request_weather();
 }
 
 
@@ -100,9 +103,17 @@ void handle_minsec_tick(AppContextRef ctx, PebbleTickEvent *evt)
 void pbl_main(void *params) {
   PebbleAppHandlers handlers = {
     .init_handler = &handle_init,
+
     .tick_info = {
       .tick_handler = &handle_minsec_tick,
       .tick_units = MY_TICK_UNIT
+    },
+
+    .messaging_info = {
+      .buffer_sizes = {
+          .inbound = 124,
+          .outbound = 256
+      }
     }
   };
   app_event_loop(params, &handlers);

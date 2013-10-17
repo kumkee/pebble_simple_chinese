@@ -3,6 +3,11 @@
 #define LOC_MAG	1000000
 #define UPD_FREQ 3	//weather update frequency in minute
 
+extern DynTextLayer weather_layer, debug_layer;
+
+int w = 0, s = 0;/////////////////
+static int count = 0;/////////////
+
 static int lat, lng;
 
 static bool located = false;
@@ -62,37 +67,49 @@ const char* WEATHER_CONDITION[] = {
 
 void request_weather()
 {
+   snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", ++w, s, count);/////////////
+   text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+
+   if(!located)	http_location_request();
+
    // Build the HTTP request
    DictionaryIterator *body;
-   HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
+   //HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
+   http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
+   /*
    if(result != HTTP_OK) {
 	return;
    }
+   */
    dict_write_int32(body, WEATHER_KEY_LATITUDE, lat);
    dict_write_int32(body, WEATHER_KEY_LONGITUDE, lng);
    dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
    // Send it.
+   http_out_send();
+   /*
    if(http_out_send() != HTTP_OK) {
 	return;
    }
+   */
 }
 
 
 void _weather_upd(DynTextLayer* dtl, PebbleTickEvent* evt)
 {
-   if(!located)	http_location_request();
-
    request_weather();
 }
 
 
 bool _weather_upd_cri(PebbleTickEvent* evt)
 {
-   static uint8_t count = -1;
-   count++;
-   
+   //static int count = 0;
+
    if(evt->units_changed & MINUTE_UNIT)
    {
+	count++;
+	snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", w, s, count);/////////////
+	text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+   
 	if(count % UPD_FREQ == 0)
 	{
 	   count = 0;
@@ -103,11 +120,15 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
    }
    else
 	return false;
+
 }
 
 
 void handle_success(int32_t cookie, int http_status, DictionaryIterator* received, void* context)
 {
+   snprintf(debug_layer.content, TXTBUFFERSIZE, "%d %d %d", w, ++s, count);/////////////
+   text_layer_set_text(&debug_layer.text_layer, debug_layer.content);/////////////
+
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
    static int16_t idx, temp;

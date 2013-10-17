@@ -53,7 +53,7 @@ void DTL_printf(DynTextLayer* dtl, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    vsnprintf(dtl->content, TXTBUFFERSIZE, fmt, args);
+    snprintf(dtl->content, TXTBUFFERSIZE, fmt, args);
     va_end(args);
 
     text_layer_set_text(&dtl->text_layer, dtl->content);
