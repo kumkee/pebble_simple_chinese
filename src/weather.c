@@ -1,7 +1,7 @@
 #include "weather.h"
 
 #define LOC_MAG	1000000
-#define UPD_FREQ 30	//weather update frequency in minute
+#define UPD_FREQ 15	//weather update frequency in minute
 
 extern DynTextLayer weather_layer, debug_layer, info_layer;
 #if DEBUG
@@ -191,7 +191,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    if(updmin_tuple)
 	upd_min = updmin_tuple->value->int16;
 
-   DTL_printf(&info_layer, "%d:%d更新  ", upd_hr, upd_min);
+   DTL_printf(&info_layer, "%d:%02d更新  ", upd_hr, upd_min);
 
 
 }
