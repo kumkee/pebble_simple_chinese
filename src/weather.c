@@ -185,7 +185,7 @@ void handle_failed(int32_t cookie, int http_status, void* htl)
    DTL_printf(&debug_layer, "%d %d %d %d", w, n_success, ++f, count_min);/////////////
    #endif
    
-   if(n_success<1)
+   if(n_success<2)
 	{DTL_printf(&weather_layer, "離線 ");}
    else	
 	{DTL_printf(&info_layer, "離線  ");}
