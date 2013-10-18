@@ -6,9 +6,9 @@
 extern DynTextLayer weather_layer, debug_layer, info_layer;
 #if DEBUG
 extern DynTextLayer debug_layer;
+int w = 0, s = 0;/////////////////
 #endif
 
-int w = 0, s = 0;/////////////////
 static int count = 0;/////////////
 
 static int lat, lng;
@@ -16,55 +16,55 @@ static int lat, lng;
 static bool located = false;
 
 const char* WEATHER_CONDITION[] = {
-	"龍捲風",
-	"熱帶風暴",
-	"颶風",
-	"強雷暴",
-	"雷暴",
-	"雨雪",
-	"雨夾雪",
-	"雨夾雪",
-	"凍結小雨",
-	"小雨",
-	"凍雨",
-	"陣雨",
-	"陣雨",
-	"陣雪",
-	"光陣雪",
-	"吹雪",
-	"雪",
-	"冰雹",
-	"雨夾雪",
-	"灰塵",
-	"霧",
-	"陰霾",
-	"煙熏",
-	"勁風",
-	"多風",
-	"冷",
-	"多雲",
-	"晴間多雲",
-	"晴間多雲",
-	"晴間多雲",
-	"晴間多雲",
-	"晴",
-	"陽光明媚",
-	"晴朗",
-	"晴朗",
-	"雨夾冰雹",
-	"熱",
-	"雷暴",
-	"雷暴",
-	"雷暴",
-	"零星陣雨",
-	"大雪",
-	"零星陣雪",
-	"大雪",
-	"晴間多雲",
-	"雷陣雨",
-	"陣雪",
-	"雷陣雨",
-	"無法使用"
+	"龍捲風",	//0	tornado
+	"熱帶風暴",	//1	tropical storm
+	"颶風",		//2	hurricane
+	"強雷暴",	//3	severe thunderstorms
+	"雷暴",		//4	thunderstorms
+	"雨雪",		//5	mixed rain and snow
+	"雨夾雪",	//6	mixed rain and sleet
+	"雨夾雪",	//7	mixed snow and sleet
+	"凍結小雨",	//8	freezing drizzle
+	"小雨",		//9	drizzle
+	"凍雨",		//10	freezing rain
+	"陣雨",		//11	showers
+	"陣雨",		//12	showers
+	"陣雪",		//13	snow flurries
+	"光陣雪",	//14	light snow showers
+	"吹雪",		//15	blowing snow
+	"雪",		//16	snow
+	"冰雹",		//17	hail
+	"雨夾雪",	//18	sleet
+	"灰塵",		//19	dust
+	"霧",		//20	foggy
+	"陰霾",		//21	haze
+	"煙熏",		//22	smoky
+	"勁風",		//23	blustery
+	"多風",		//24	windy
+	"冷",		//25	cold
+	"多雲",		//26	cloudy
+	"多雲",		//27	mostly cloudy (night)
+	"多雲",		//28	mostly cloudy (day)
+	"晴間多雲",	//29	partly cloudy (night)
+	"晴間多雲",	//30	partly cloudy (day)
+	"晴",		//31	clear (night)
+	"陽光明媚",	//32	sunny
+	"晴朗",		//33	fair (night)
+	"晴朗",		//34	fair (day)
+	"雨夾冰雹",	//35	mixed rain and hail
+	"熱",		//36	hot
+	"雷暴",		//37	isolated thunderstorms
+	"雷暴",		//38	scattered thunderstorms
+	"雷暴",  	//39	scattered thunderstorms
+	"零星陣雨",	//40	scattered showers
+	"大雪",		//41	heavy snow
+	"零星陣雪",	//42	scattered snow showers
+	"大雪",		//43	heavy snow
+	"晴間多雲",	//44	partly cloudy
+	"雷陣雨",	//45	thundershowers
+	"陣雪",		//46	snow showers
+	"雷陣雨",	//47	isolated thundershowers
+	"無法使用"	//3200	not available
     };
 
 
@@ -173,7 +173,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 	DTL_printf(&weather_layer, "%s∞%s ",
 		   WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
    }
-   DTL_printf(&info_layer, "%s ", str_now);
+   DTL_printf(&info_layer, "%s更新 ", str_now);
 }
 
 

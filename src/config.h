@@ -15,6 +15,7 @@
 
 //-------------------------------------------------------------------------
   #define DEBUG	1
+
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 
   #define WHITE_ON_BLACK	!WHITE_BACKGROUND
@@ -101,7 +102,7 @@
   #define sec_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_CONDENSED_13))
   #define weather_FONT	cdate_FONT
   #define debug_FONT	cdate_FONT
-  #define info_FONT	cdate_FONT
+  #define info_FONT	fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IPAG_13))
 
 
   #define MY_TICK_UNIT	INCLUDE_SEC ? SECOND_UNIT : MINUTE_UNIT
