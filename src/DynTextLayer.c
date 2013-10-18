@@ -4,8 +4,6 @@
 
 void update(DynTextLayer *self, PebbleTickEvent* evt)
 {
-    if(self->is_first_update) DTL_printf(self, "稍候… ");
-    
     if(self->is_first_update || self->_upd_criteria(evt))
     {
 	self->_upd_method(self,evt);

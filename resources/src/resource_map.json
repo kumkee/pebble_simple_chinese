@@ -59,7 +59,7 @@
         {
         "type": "font",
         "characterRegex": "[:離線 0-9更新]",
-        "defName": "FONT_IPAG_13",
+        "defName": "FONT_IPAG_11",
         "file": "fonts/ipag.ttf"
         }
  ]
