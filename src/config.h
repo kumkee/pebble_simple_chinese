@@ -123,7 +123,9 @@
 	
 // Received variables
   #define WEATHER_KEY_TEMPERATURE 1
-  #define WEATHER_CODE 4
+  #define WEATHER_CODE 2
+  #define UPDATE_HOUR 3
+  #define UPDATE_MIN 4
 
 //mmm cookie
   #define WEATHER_HTTP_COOKIE 1949999771

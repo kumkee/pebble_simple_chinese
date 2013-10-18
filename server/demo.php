@@ -1,8 +1,7 @@
 <?php
-define("FLICKR_KEY", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
 error_reporting(0);
-
+/*
 $payload = json_decode(file_get_contents('php://input'), true);
 if(!$payload) {
 	$payload = json_decode("{\"1\": 40424248,\"2\": -2008086,\"3\": \"c\"}", true);
@@ -22,6 +21,9 @@ $flickrResponse = get_data('http://api.flickr.com/services/rest/?method=flickr.p
 $flickrResponse = json_decode(substr($flickrResponse, 14, strlen($flickrResponse) - 15), true);
 $woeid = $flickrResponse['places']['place'][0]['woeid'];
 $woename = $flickrResponse['places']['place'][0]['woe_name'];
+*/
+$woeid = "2165360";
+$units = "c";
 if($woeid) {
 	$xml = simplexml_load_file('http://weather.yahooapis.com/forecastrss?w=' . $woeid . '&u=' . $units);
 	$xml->registerXPathNamespace('yweather', 'http://xml.weather.yahoo.com/ns/rss/1.0');

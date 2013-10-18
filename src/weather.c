@@ -155,12 +155,12 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
-   static int16_t idx, temp;
-   char str_now[6];
-   PblTm time_now;
+   static int16_t idx, temp, upd_hr, upd_min;
+   //uint16_t upd_time_len;
+   //PblTm time_now;
 
-   get_time(&time_now);
-   string_format_time(str_now, sizeof(str_now), "%R", &time_now);
+   //get_time(&time_now);
+   //string_format_time(str_now, sizeof(str_now), "%R", &time_now);
 
    Tuple* idx_tuple = dict_find(received, WEATHER_CODE);
    if(idx_tuple) {
@@ -182,7 +182,18 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 	DTL_printf(&weather_layer, "%s∞%s ",
 		   WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
    }
-   DTL_printf(&info_layer, "%s更新  ", str_now);
+
+   Tuple* updhr_tuple = dict_find(received, UPDATE_HOUR);
+   if(updhr_tuple)
+	upd_hr = updhr_tuple->value->int16;
+
+   Tuple* updmin_tuple = dict_find(received, UPDATE_MIN);
+   if(updmin_tuple)
+	upd_min = updmin_tuple->value->int16;
+
+   DTL_printf(&info_layer, "%d:%d更新  ", upd_hr, upd_min);
+
+
 }
 
 
