@@ -3,7 +3,7 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		true	//whether to include second
+  #define INCLUDE_SEC		false	//whether to include second
 
   #define WHITE_BACKGROUND	false
 
@@ -14,7 +14,7 @@
   //These are default configurations
 
 //-------------------------------------------------------------------------
-  #define DEBUG	1
+  #define DEBUG	0
 
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 

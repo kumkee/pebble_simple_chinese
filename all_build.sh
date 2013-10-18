@@ -1,7 +1,7 @@
 #!/bin/bash
 WF="simple_chinese"
-VM=2
-VS=2
+VM=3
+VS=0
 EXT='.pbw'
 CFG='src/config.h'
 MAIN="src/$WF.c"
