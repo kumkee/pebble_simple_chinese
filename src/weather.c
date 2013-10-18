@@ -82,15 +82,22 @@ void request_weather()
    HTTPResult result = http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
    //http_out_get(SERVER_URL, WEATHER_HTTP_COOKIE, &body);
    if(result != HTTP_OK) {
-	return;
+	#if DEBUG
+	DTL_printf(&debug_layer, "0:%d", result);/////////////
+	#endif
+	//return;
    }
 
    dict_write_int32(body, WEATHER_KEY_LATITUDE, lat);
    dict_write_int32(body, WEATHER_KEY_LONGITUDE, lng);
    dict_write_cstring(body, WEATHER_KEY_UNIT_SYSTEM, UNIT_SYSTEM);
    // Send it.
-   if(http_out_send() != HTTP_OK) {
-	return;
+   result = http_out_send();
+   if(result != HTTP_OK) {
+	#if DEBUG
+	DTL_printf(&debug_layer, "0:%d", result);/////////////
+	#endif
+	//return;
    }
 }
 

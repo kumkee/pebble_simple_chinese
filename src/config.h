@@ -35,7 +35,7 @@
 
   #define debug_POS_X	LEFT_MARGIN
   #define debug_POS_Y	TOP_MARGIN + weather_HEIGHT
-  #define debug_LENGTH	TOT_LENGTH/2 - LEFT_MARGIN
+  #define debug_LENGTH	TOT_LENGTH*3/2 - LEFT_MARGIN
   #define debug_HEIGHT	weather_HEIGHT
   #define debug_GRECT	GRect(debug_POS_X, debug_POS_Y, debug_LENGTH, debug_HEIGHT)
   
