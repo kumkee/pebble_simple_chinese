@@ -1,5 +1,9 @@
 <?php
 define("FLICKR_KEY", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+define("MYSQLPASS", "xxxxxxxx");
+define('MYSQLHOST', 'host.domain');
+define('MYSQLUSER', 'username');
+define('DBNAME', 'dbname');
 
 error_reporting(0);
 
@@ -10,13 +14,11 @@ if(!$payload) {
 $lat = $payload[1] / 1000000;
 $long = $payload[2] / 1000000;
 $units = $payload[3];
-
 $pebbleid = "ABC1234567";
-
-try {
-	$pebbleid = $_SERVER['HTTP_X_PEBBLE_ID'];
-}
-catch (Exception $e) { }
+/*$pebbleid = $_SERVER['HTTP_X_PEBBLE_ID'];
+if(empty($pebbleid)) {
+	$pebbleid = "ABC1234567";
+}*/
 
 $flickrResponse = get_data('http://api.flickr.com/services/rest/?method=flickr.places.findByLatLon&format=json&api_key=' . FLICKR_KEY . '&lat=' . $lat . '&lon=' . $long);
 $flickrResponse = json_decode(substr($flickrResponse, 14, strlen($flickrResponse) - 15), true);
@@ -51,68 +53,12 @@ else {
 	$forecasthigh = 99;
 
 }
-// yahoo code => watch face icon id // yahoo condition => watch face condition
-/*
-$icons = array(
-	0 => 5, //tornado => wind
-	1 => 5, //tropical storm => wind
-	2 => 5, //hurricane => wind
-	3 => 10, //severe thunderstorms => thunder
-	4 => 10, //thunderstorms => thunder
-	5 => 11, //mixed rain and snow => rain-snow
-	6 => 12, //mixed rain and sleet => rain-sleet
-	7 => 13, //mixed snow and sleet => snow-sleet
-	8 => 2, //freezing drizzle => rain
-	9 => 2, //drizzle => rain
-	10 => 2, //freezing rain => rain
-	11 => 2, //showers => rain
-	12 => 2, //showers => rain
-	13 => 3, //snow flurries => snow
-	14 => 3, //light snow showers => snow
-	15 => 3, //blowing snow => snow
-	16 => 3, //snow => snow
-	17 => 4, //hail => sleet
-	18 => 4, //sleet => sleet
-	19 => 6, //dust => fog
-	20 => 6, //foggy => fog
-	21 => 6, //haze => fog
-	22 => 6, //smoky => fog
-	23 => 5, //blustery => wind
-	24 => 5, //windy => wind
-	25 => 13, //cold => cold
-	26 => 7, //cloudy => cloudy
-	27 => 9, //mostly cloudy (night) => partly-cloudy-night
-	28 => 8, //mostly cloudy (day) => partly-cloudy-day
-	29 => 9, //partly cloudy (night) => partly-cloudy-night
-	30 => 8, //partly cloudy (day) => partly-cloudy-day
-	31 => 1, //clear (night) => clear-night
-	32 => 0, //sunny => clear-day
-	33 => 9, //fair (night) => partly-cloudy-night
-	34 => 8, //fair (day) => partly-cloudy-day
-	35 => 12, //mixed rain and hail => rain-sleet
-	36 => 14, //hot => hot
-	37 => 10, //isolated thunderstorms => thunder
-	38 => 10, //scattered thunderstorms => thunder
-	39 => 10, //scattered thunderstorms => thunder
-	40 => 2, //scattered showers => rain
-	41 => 3, //heavy snow => snow
-	42 => 3, //scattered snow showers => snow
-	43 => 3, //heavy snow => snow
-	44 => 8, //partly cloudy => partly-cloudy-day
-	45 => 10, //thundershowers => thunder
-	46 => 3, //snow showers => snow
-	47 => 10, //isolated thundershowers => thunder
-	3200 => 15 //not available
-);
-*/
+
 $data = array();
 
 if($code == 3200) {
 	$code=48;
 }
-
-//$code=48;
-//$temperature=999;
 
 
 $data[1] = $temperature;
@@ -129,13 +75,67 @@ fputs($fp, $logentry . PHP_EOL);
 @fclose($fp);  
 */
 
-header('Content-Type: application/json');
+
+header('Content-Type: application/json, charset=utf-8');
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
 header("Cache-Control: no-store, no-cache, must-revalidate"); 
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 print json_encode($data);
+
+
+
+$geojson = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $long . '&sensor=false&language=zh-CN');
+$geocode = json_decode($geojson, TRUE);
+$addcomp = $geocode["results"][1]["address_components"];
+$district = $addcomp[1]["short_name"];
+$city = $addcomp[2]["short_name"];
+$prov = $addcomp[3]["short_name"];
+$country = $addcomp[4]["short_name"];
+
+/*print PHP_EOL . $district . PHP_EOL;
+print $city . PHP_EOL;
+print $prov . PHP_EOL;
+print $country . PHP_EOL;	*/
+
+$create_table =
+'CREATE TABLE IF NOT EXISTS ' . $pebbleid . '  
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    upd_time TIMESTAMP,
+    latitude DECIMAL(10,7) DEFAULT NULL,
+    longitude DECIMAL(10,7) DEFAULT NULL,
+    district VARCHAR(25) DEFAULT NULL,
+    city VARCHAR(25) DEFAULT NULL,
+    province VARCHAR(25) DEFAULT NULL,
+    country VARCHAR(5) DEFAULT NULL,
+    PRIMARY KEY(id)
+)';
+
+$db = new mysqli(MYSQLHOST, MYSQLUSER, MYSQLPASS, DBNAME);
+
+//if ($db->connect_errno) {
+//        echo "Failed to connect to MySQL: ("
+//    . $db->connect_errno . ") " . $db->connect_error;
+//}
+
+$db->query($create_table);
+/*if ($db->query($create_table)) {
+//        echo "Table has created\n";
+}
+else {
+//        echo "error creating table\n";
+}*/
+
+$stmt = $db->prepare("INSERT INTO " . $pebbleid . "(latitude,longitude,district,city,province,country) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param('ddssss', $lat, $long, $district, $city, $prov, $country);
+$stmt->execute();
+
+$stmt->close();
+
+$db->close();
+
 
 
 function get_data($url) {

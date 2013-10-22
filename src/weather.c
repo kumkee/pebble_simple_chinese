@@ -152,6 +152,10 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    #if DEBUG
    DTL_printf(&debug_layer, "%d %d %d %d", w, n_success, f, count_min);/////////////
    #endif
+   if(n_success > 12){
+	located = false;
+	n_success = 2;
+   }
 
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
@@ -170,7 +174,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    }
 
    Tuple* temperature_tuple = dict_find(received, WEATHER_KEY_TEMPERATURE);
-   if(temperature_tuple)
+   if(temperature_tuple || temperature_tuple->value->int16==999)
    {
 	temp = temperature_tuple->value->int16;
 	DTL_printf(&weather_layer, "%s%d%s ",
@@ -197,16 +201,24 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 }
 
 
-void handle_failed(int32_t cookie, int http_status, void* htl)
+void handle_failed(int32_t cookie, int http_status, void* evt)
 {
    #if DEBUG
    DTL_printf(&debug_layer, "%d %d %d %d", w, n_success, ++f, count_min);/////////////
    #endif
    
    if(n_success<2)
-	{DTL_printf(&weather_layer, "離線 ");}
+   {
+	DTL_printf(&weather_layer, "離線 ");
+   }
    else	
-	{DTL_printf(&info_layer, "離線  ");}
+   {
+	char str_now[6];
+	PblTm* time_now = NULL;
+	get_time(time_now);
+	string_format_time(str_now, 6, "%R", time_now);
+	DTL_printf(&info_layer, "%s離線  ", str_now);
+   }
 }
 
 

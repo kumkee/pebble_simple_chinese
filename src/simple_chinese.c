@@ -76,6 +76,9 @@ void handle_init(AppContextRef ctx) {
   DTL_init(&info_layer, &window.layer, info_GRECT, info_FONT, NULL, NULL);
   DTL_set_alignment(&info_layer, GTextAlignmentRight);
 
+  srand(time(NULL));
+  int32_t HTTP_APP_ID = RAND_MAX/2 - rand(); 
+  
   http_set_app_id(HTTP_APP_ID);
   HTTPCallbacks httpcallbacks = {
     .success = handle_success,

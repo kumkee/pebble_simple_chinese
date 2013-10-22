@@ -3,7 +3,7 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		false	//whether to include second
+  #define INCLUDE_SEC		true	//whether to include second
 
   #define WHITE_BACKGROUND	false
 
@@ -128,9 +128,10 @@
   #define UPDATE_MIN 4
 
 //mmm cookie
-  #define WEATHER_HTTP_COOKIE 1949999771
+  //#define WEATHER_HTTP_COOKIE 1949999771
+  #define WEATHER_HTTP_COOKIE 1949327671
 
 // HTTP app id
-  #define HTTP_APP_ID 0xbc8495c3
+//  #define HTTP_APP_ID 0xbc8495c3
 
 #endif
