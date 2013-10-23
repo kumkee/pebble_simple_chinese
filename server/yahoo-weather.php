@@ -9,16 +9,17 @@ error_reporting(0);
 
 $payload = json_decode(file_get_contents('php://input'), true);
 if(!$payload) {
-	$payload = json_decode("{\"1\": 40424248,\"2\": -2008086,\"3\": \"c\"}", true);
+	$payload = json_decode("{\"1\": 30000000,\"2\": 120000000,\"3\": \"c\"}", true);
 }	
 $lat = $payload[1] / 1000000;
 $long = $payload[2] / 1000000;
 $units = $payload[3];
-$pebbleid = "ABC1234567";
-/*$pebbleid = $_SERVER['HTTP_X_PEBBLE_ID'];
-if(empty($pebbleid)) {
-	$pebbleid = "ABC1234567";
-}*/
+
+//$pebbleid = "ABC1234567";
+$pebbleid = $_SERVER['HTTP_X_PEBBLE_ID'];
+if(empty($pebbleid) || !$pebbleid) {
+	$pebbleid = "AXX1234567";
+}
 
 $flickrResponse = get_data('http://api.flickr.com/services/rest/?method=flickr.places.findByLatLon&format=json&api_key=' . FLICKR_KEY . '&lat=' . $lat . '&lon=' . $long);
 $flickrResponse = json_decode(substr($flickrResponse, 14, strlen($flickrResponse) - 15), true);
@@ -34,24 +35,10 @@ if($woeid) {
 	$updtime = explode(" ", (string)$condition[0]['date']);
 	$updtime = explode(":", $updtime[4]);
 
-	//$astronomy = $xml->channel->xpath('yweather:astronomy');
-	//$sunrise = str_replace(' ', '', $astronomy[0]['sunrise']);
-	//$sunset = str_replace(' ', '', $astronomy[0]['sunset']);
-
-	//$forecast = $xml->channel->item->xpath('yweather:forecast');
-	//$forecasthigh = (int)$forecast[0]['high'];
-	//$forecastlow = (int)$forecast[0]['low'];
-
-	//$location = $xml->channel->xpath('yweather:location');
-	//$city = $location[0]['city'];
 }
 else {
-
 	$code = 3200;
 	$temperature = 999;
-	$forecasthigh = 99;
-	$forecasthigh = 99;
-
 }
 
 $data = array();
@@ -62,18 +49,10 @@ if($code == 3200) {
 
 
 $data[1] = $temperature;
-//$data[2] = $forecasthigh; 
-//$data[3] = $forecastlow;
 $data[2] = $code;
 $data[3] = (int)$updtime[0];
 $data[4] = (int)$updtime[1];
 
-/*
-$logentry = date('Y-m-d H:i:s') . PHP_EOL . $pebbleid . PHP_EOL . json_encode($payload) . PHP_EOL . json_encode($data) . PHP_EOL; 
-$fp = @fopen('log.txt', 'a');  
-fputs($fp, $logentry . PHP_EOL);  
-@fclose($fp);  
-*/
 
 
 header('Content-Type: application/json, charset=utf-8');
@@ -87,17 +66,21 @@ print json_encode($data);
 
 
 $geojson = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $long . '&sensor=false&language=zh-CN');
-$geocode = json_decode($geojson, TRUE);
-$addcomp = $geocode["results"][1]["address_components"];
-$district = $addcomp[1]["short_name"];
-$city = $addcomp[2]["short_name"];
-$prov = $addcomp[3]["short_name"];
-$country = $addcomp[4]["short_name"];
+$geodata = json_decode($geojson, TRUE);
+$addcomp = $geodata["results"][0]["address_components"];
 
-/*print PHP_EOL . $district . PHP_EOL;
-print $city . PHP_EOL;
-print $prov . PHP_EOL;
-print $country . PHP_EOL;	*/
+$city_idx = 0; $i = 0;
+foreach ($addcomp as $componet){
+   if($componet["types"][0] == "locality")
+	$city_idx = $i;
+   $i++;
+}
+
+$city = $addcomp[$city_idx]["short_name"];
+$prov = $addcomp[$city_idx+1]["short_name"];
+$country = $addcomp[$city_idx+2]["short_name"];
+$district = $addcomp[$city_idx-1]["short_name"];
+
 
 $create_table =
 'CREATE TABLE IF NOT EXISTS ' . $pebbleid . '  
