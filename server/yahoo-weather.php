@@ -81,11 +81,14 @@ $prov = $addcomp[$city_idx+1]["short_name"];
 $country = $addcomp[$city_idx+2]["short_name"];
 $district = $addcomp[$city_idx-1]["short_name"];
 
-
+//$tbl_name = $pebbleid;
+//$tbl_name = "test";
+$tbl_name = str_replace(":", "", $pebbleid);
 $create_table =
-'CREATE TABLE IF NOT EXISTS ' . $pebbleid . '  
+'CREATE TABLE IF NOT EXISTS ' . $tbl_name . '  
 (
     id INT NOT NULL AUTO_INCREMENT,
+    pbl_id VARCHAR(25) DEFAULT NULL,
     upd_time TIMESTAMP,
     latitude DECIMAL(10,7) DEFAULT NULL,
     longitude DECIMAL(10,7) DEFAULT NULL,
@@ -98,21 +101,22 @@ $create_table =
 
 $db = new mysqli(MYSQLHOST, MYSQLUSER, MYSQLPASS, DBNAME);
 
-//if ($db->connect_errno) {
-//        echo "Failed to connect to MySQL: ("
-//    . $db->connect_errno . ") " . $db->connect_error;
-//}
+if ($db->connect_errno) {
+        echo "Failed to connect to MySQL: ("
+    . $db->connect_errno . ") " . $db->connect_error;
+}
 
 $db->query($create_table);
-/*if ($db->query($create_table)) {
+if ($db->query($create_table)) {
 //        echo "Table has created\n";
 }
 else {
-//        echo "error creating table\n";
-}*/
+        echo "error creating table\n";
+	die();
+}
 
-$stmt = $db->prepare("INSERT INTO " . $pebbleid . "(latitude,longitude,district,city,province,country) VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->bind_param('ddssss', $lat, $long, $district, $city, $prov, $country);
+$stmt = $db->prepare("INSERT INTO " . $tbl_name . "(pbl_id,latitude,longitude,district,city,province,country) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param('sddssss', $pebbleid, $lat, $long, $district, $city, $prov, $country);
 $stmt->execute();
 
 $stmt->close();
