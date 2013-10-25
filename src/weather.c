@@ -13,7 +13,7 @@ int w = 0, f = 0;/////////////////
 static int count_min = -1;	//Number of whole minute passed
 static uint8_t n_success = 0;	//Number of successful weather_request() calls
 static uint8_t n_retrial = 0;	//Number of connection retrials
-static const uint8_t MAX_N_RETRY = 3;
+static const uint8_t MAX_N_RETRY = 5;
 
 static int lat, lng;
 
