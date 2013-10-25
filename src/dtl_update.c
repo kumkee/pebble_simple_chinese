@@ -15,7 +15,11 @@ void CDateDisplayZh(Date *d, char* text)
 {
   char ZhDigit[10][zhLen+1] = { "正", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
   char ZhDigit2[3][zhLen+1] = { "初", "十", "廿" }; //digit in ten's place
-  char ZhLeap[] = "閏";
+  #if ZH_TRADITIONAL
+  char ZhLeap[] =  "閏";
+  #else
+  char ZhLeap[] = "闰";
+  #endif
   char ZhMonth[] = "月";
   char* ZhTen[3] = { ZhDigit2[0], ZhDigit[2], ZhDigit[3] }; //初, 二, 三
 

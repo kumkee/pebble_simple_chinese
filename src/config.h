@@ -7,6 +7,8 @@
 
   #define WHITE_BACKGROUND	false
 
+  #define ZH_TRADITIONAL	false
+
 //Celsius / Fahrenheit
   #define UNIT_SYSTEM "c" // c or f
 
@@ -14,7 +16,7 @@
   //These are default configurations
 
 //-------------------------------------------------------------------------
-  #define DEBUG	0
+  #define DEBUG	1
 
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 

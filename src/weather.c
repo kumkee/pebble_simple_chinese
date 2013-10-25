@@ -1,7 +1,8 @@
 #include "weather.h"
+#include "weather_zh.h"
 
 #define LOC_MAG	1000000
-#define UPD_FREQ 15	//weather update frequency in minute
+#define UPD_FREQ 3	//weather update frequency in minute
 
 extern DynTextLayer weather_layer, debug_layer, info_layer;
 #if DEBUG
@@ -15,58 +16,6 @@ static int n_success = 0;	//Number of successful weather_request() calls
 static int lat, lng;
 
 static bool located = false;
-
-const char* WEATHER_CONDITION[] = {
-	"龍捲風",	//0	tornado
-	"熱帶風暴",	//1	tropical storm
-	"颶風",		//2	hurricane
-	"強雷暴",	//3	severe thunderstorms
-	"雷暴",		//4	thunderstorms
-	"雨雪",		//5	mixed rain and snow
-	"雨夾雪",	//6	mixed rain and sleet
-	"雨夾雪",	//7	mixed snow and sleet
-	"凍結小雨",	//8	freezing drizzle
-	"小雨",		//9	drizzle
-	"凍雨",		//10	freezing rain
-	"陣雨",		//11	showers
-	"陣雨",		//12	showers
-	"陣雪",		//13	snow flurries
-	"光陣雪",	//14	light snow showers
-	"吹雪",		//15	blowing snow
-	"雪",		//16	snow
-	"冰雹",		//17	hail
-	"雨夾雪",	//18	sleet
-	"灰塵",		//19	dust
-	"霧",		//20	foggy
-	"陰霾",		//21	haze
-	"煙熏",		//22	smoky
-	"勁風",		//23	blustery
-	"多風",		//24	windy
-	"冷",		//25	cold
-	"多雲",		//26	cloudy
-	"多雲",		//27	mostly cloudy (night)
-	"多雲",		//28	mostly cloudy (day)
-	"晴間多雲",	//29	partly cloudy (night)
-	"晴間多雲",	//30	partly cloudy (day)
-	"晴",		//31	clear (night)
-	"陽光明媚",	//32	sunny
-	"晴朗",		//33	fair (night)
-	"晴朗",		//34	fair (day)
-	"雨夾冰雹",	//35	mixed rain and hail
-	"熱",		//36	hot
-	"雷暴",		//37	isolated thunderstorms
-	"雷暴",		//38	scattered thunderstorms
-	"雷暴",  	//39	scattered thunderstorms
-	"零星陣雨",	//40	scattered showers
-	"大雪",		//41	heavy snow
-	"零星陣雪",	//42	scattered snow showers
-	"大雪",		//43	heavy snow
-	"晴間多雲",	//44	partly cloudy
-	"雷陣雨",	//45	thundershowers
-	"陣雪",		//46	snow showers
-	"雷陣雨",	//47	isolated thundershowers
-	"無法使用"	//3200	not available
-    };
 
 
 void request_weather()
@@ -104,7 +53,7 @@ void request_weather()
 
 void _weather_upd(DynTextLayer* self, PebbleTickEvent* evt)
 {
-   if(self->is_first_update) DTL_printf(self, "稍候… ");
+   if(self->is_first_update) DTL_printf(self, "%s ", MSG_WAIT);
 
    request_weather();
 }
@@ -195,7 +144,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    if(updmin_tuple)
 	upd_min = updmin_tuple->value->int16;
 
-   DTL_printf(&info_layer, "%d:%02d更新  ", upd_hr, upd_min);
+   DTL_printf(&info_layer, "%d:%02d%s  ", upd_hr, upd_min, MSG_UPDATE);
 
 
 }
@@ -209,15 +158,15 @@ void handle_failed(int32_t cookie, int http_status, void* evt)
    
    if(n_success<2)
    {
-	DTL_printf(&weather_layer, "離線 ");
+	DTL_printf(&weather_layer, "%s ", MSG_OFFLINE);
    }
    else	
    {
 	char str_now[6];
-	PblTm* time_now = NULL;
-	get_time(time_now);
-	string_format_time(str_now, 6, "%R", time_now);
-	DTL_printf(&info_layer, "%s離線  ", str_now);
+	PblTm time_now;
+	get_time(&time_now);
+	string_format_time(str_now, sizeof(str_now), "%R", &time_now);
+	DTL_printf(&info_layer, "%s%s  ", str_now, MSG_OFFLINE);
    }
 }
 
