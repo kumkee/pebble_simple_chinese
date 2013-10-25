@@ -16,7 +16,7 @@
   //These are default configurations
 
 //-------------------------------------------------------------------------
-  #define DEBUG	1
+  #define DEBUG	0
 
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 

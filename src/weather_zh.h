@@ -7,6 +7,59 @@ const char MSG_UPDATE[] = "更新";
 
 const char MSG_WAIT[] = "稍候…";
 
+const char* MSG_SEND_TIMEOUT = "連接手機超時";
+
+const char* MSG_NOT_CONNECTED = "藍牙離線";
+
+const char* MSG_BRIDGE_NOT_RUNNING = "手機端未運行";
+
+const char* MSG_INVALID_ARGS = "錯誤參數";
+
+const char* MSG_BUSY = "連接中";
+
+const char* MSG_BUFFER_OVERFLOW = "緩存溢出";
+
+const char* MSG_NOT_ENOUGH_STORAGE = "空間不足";
+
+const char* MSG_INTERNAL_INCONSISTENCY = "內部錯誤";
+
+const char* MSG_INVALID_BRIDGE_RESPONSE = "手機端錯誤";
+
+const char* MSG_OTHER = "離線";
+
+const char* MSG_OK = "";
+
+const char* error_msg(int r)
+{
+   switch(r)
+   {
+    case HTTP_OK:
+	return MSG_OK;
+    case HTTP_SEND_TIMEOUT:
+	return MSG_SEND_TIMEOUT;
+    case HTTP_NOT_CONNECTED:
+	return MSG_NOT_CONNECTED;
+    case HTTP_BRIDGE_NOT_RUNNING:
+	return MSG_BRIDGE_NOT_RUNNING;
+    case HTTP_INVALID_ARGS:
+	return MSG_INVALID_ARGS;
+    case HTTP_BUSY:
+	return MSG_BUSY;
+    case HTTP_BUFFER_OVERFLOW:
+	return MSG_BUFFER_OVERFLOW;
+    case HTTP_NOT_ENOUGH_STORAGE:
+	return MSG_NOT_ENOUGH_STORAGE;
+    case HTTP_INTERNAL_INCONSISTENCY:
+	return MSG_INTERNAL_INCONSISTENCY;
+    case HTTP_INVALID_BRIDGE_RESPONSE:
+	return MSG_INVALID_BRIDGE_RESPONSE;
+    default:
+	return MSG_OTHER;
+   }
+}
+
+
+
 const char* WEATHER_CONDITION_T[] = {
 	"龍捲風",	//0	tornado
 	"熱帶風暴",	//1	tropical storm

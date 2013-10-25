@@ -11,8 +11,9 @@ int w = 0, f = 0;/////////////////
 #endif
 
 static int count_min = -1;	//Number of whole minute passed
-static int n_success = 0;	//Number of successful weather_request() calls
-static int n_retrial = 0;	//Number of connection retrials
+static uint8_t n_success = 0;	//Number of successful weather_request() calls
+static uint8_t n_retrial = 0;	//Number of connection retrials
+static const uint8_t MAX_N_RETRY = 3;
 
 static int lat, lng;
 
@@ -35,7 +36,8 @@ void request_weather()
 	#if DEBUG
 	DTL_printf(&debug_layer, "0:%d", result);/////////////
 	#endif
-	//return;
+	DTL_printf(&info_layer, "%s  ", error_msg(result));
+	return;
    }
 
    dict_write_int32(body, WEATHER_KEY_LATITUDE, lat);
@@ -47,7 +49,8 @@ void request_weather()
 	#if DEBUG
 	DTL_printf(&debug_layer, "0:%d", result);/////////////
 	#endif
-	//return;
+	DTL_printf(&info_layer, "%s  ", error_msg(result));
+	return;
    }
 }
 
@@ -98,14 +101,12 @@ bool _weather_upd_cri(PebbleTickEvent* evt)
 
 void handle_success(int32_t cookie, int http_status, DictionaryIterator* received, void* context)
 {
-   n_success++;
    #if DEBUG
+   n_success++;
    DTL_printf(&debug_layer, "%d %d %d %d", w, n_success, f, count_min);/////////////
+   #else
+   if(n_success<5) n_success++;
    #endif
-   if(n_success > 12){
-	located = false;
-	n_success = 2;
-   }
 
    n_retrial = 0;
 
@@ -158,10 +159,12 @@ void handle_failed(int32_t cookie, int http_status, void* evt)
    #if DEBUG
    DTL_printf(&debug_layer, "%d %d %d %d", w, n_success, ++f, count_min);/////////////
    #endif
+
+   const char* errmsg = error_msg(http_status - 1000);
    
    if(n_success<2)
    {
-	DTL_printf(&weather_layer, "%s ", MSG_OFFLINE);
+	DTL_printf(&weather_layer, "%s ", errmsg);
    }
    else	
    {
@@ -169,7 +172,17 @@ void handle_failed(int32_t cookie, int http_status, void* evt)
 	PblTm time_now;
 	get_time(&time_now);
 	string_format_time(str_now, sizeof(str_now), "%R", &time_now);
-	DTL_printf(&info_layer, "%s%s  ", str_now, MSG_OFFLINE);
+	DTL_printf(&info_layer, "%s%s  ", str_now, errmsg);
+   }
+
+   if(n_retrial < MAX_N_RETRY)
+   {
+	count_min = UPD_FREQ - 1;
+	n_retrial++;
+   }
+   else
+   {
+	n_retrial = 0;
    }
 }
 
