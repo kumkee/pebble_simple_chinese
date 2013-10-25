@@ -2,7 +2,7 @@
 #include "weather_zh.h"
 
 #define LOC_MAG	1000000
-#define UPD_FREQ 3	//weather update frequency in minute
+#define UPD_FREQ 15	//weather update frequency in minute
 
 extern DynTextLayer weather_layer, debug_layer, info_layer;
 #if DEBUG
@@ -10,8 +10,9 @@ extern DynTextLayer debug_layer;
 int w = 0, f = 0;/////////////////
 #endif
 
-static int count_min = -1;		//Number of whole minute passed
+static int count_min = -1;	//Number of whole minute passed
 static int n_success = 0;	//Number of successful weather_request() calls
+static int n_retrial = 0;	//Number of connection retrials
 
 static int lat, lng;
 
@@ -106,6 +107,8 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
 	n_success = 2;
    }
 
+   n_retrial = 0;
+
    if(cookie != WEATHER_HTTP_COOKIE) return;
 
    static int16_t idx, temp, upd_hr, upd_min;
@@ -123,7 +126,7 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    }
 
    Tuple* temperature_tuple = dict_find(received, WEATHER_KEY_TEMPERATURE);
-   if(temperature_tuple || temperature_tuple->value->int16==999)
+   if(temperature_tuple || temperature_tuple->value->int16!=999)
    {
 	temp = temperature_tuple->value->int16;
 	DTL_printf(&weather_layer, "%s%d%s ",

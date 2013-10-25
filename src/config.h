@@ -7,7 +7,7 @@
 
   #define WHITE_BACKGROUND	false
 
-  #define ZH_TRADITIONAL	false
+  #define ZH_TRADITIONAL	true
 
 //Celsius / Fahrenheit
   #define UNIT_SYSTEM "c" // c or f
@@ -86,7 +86,7 @@
   #define date_GRECT	GRect(date_POS_X, date_POS_Y, date_LENGTH, date_HEIGHT)
 
   #define cdate_LENGTH	date_LENGTH
-  #define cdate_HEIGHT	date_HEIGHT/3*2
+  #define cdate_HEIGHT	date_HEIGHT/3*2 + 2
   #define cdate_POS_X	LEFT_MARGIN
   #define cdate_POS_Y	date_POS_Y - cdate_HEIGHT
   #define cdate_GRECT	GRect(cdate_POS_X, cdate_POS_Y, cdate_LENGTH, cdate_HEIGHT)
