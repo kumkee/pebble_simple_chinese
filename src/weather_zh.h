@@ -1,7 +1,7 @@
 #ifndef WEATHER_ZH_H
 #define WEATHER_ZH_H
 
-const char* MSG_OFFLINE = ZH_TRADITIONAL ? "離線" : "离线";
+//const char* MSG_OFFLINE = ZH_TRADITIONAL ? "離線" : "离线";
 
 const char MSG_UPDATE[] = "更新";
 

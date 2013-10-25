@@ -1,7 +1,7 @@
 #!/bin/bash
 WF="simple_chinese"
 VM=3
-VS=0
+VS=1
 EXT='.pbw'
 CFG='src/config.h'
 MAIN="src/$WF.c"
@@ -34,6 +34,7 @@ do
    do
 	for t2 in ${tt[@]}
 	do
+	   echo;echo "----------------------------------------------------------------------------------"
 	   cp $CFG.sav $CFG
 	   cp $MAIN.tmp $MAIN 
 	   uuid=`printf "0x%x\n" $(($uuid + 1))`
