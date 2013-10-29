@@ -9,6 +9,7 @@ BLDCMD='./waf build'
 BLDDIR='build'
 STDBLD=$BLDDIR/$WF$EXT
 RDIR="releases/v$VM.$VS"
+Ncfg=4
 line=(4 6 8 10)
 symb=(n s w f)
 tt=(true false)
@@ -28,35 +29,34 @@ do
    sed -i -e "${l}s/true/false/" $CFG.sav
 done
 
-for t0 in ${tt[@]}
-do
-   for t1 in ${tt[@]}
-   do
-      for t2 in ${tt[@]}
-      do
-	for t3 in ${tt[@]}
+function func() {
+   if [ $1 -lt $Ncfg ]; then
+	for t in ${tt[@]}
 	do
-	   echo;echo "---------------------------------------------------------"
-	   cp $CFG.sav $CFG
-	   cp $MAIN.tmp $MAIN 
-	   uuid=`printf "0x%x\n" $(($uuid + 1))`
-	   sed -i -e "s/$uuid0/$uuid/" $MAIN
-	   suf=
-	   for(( i=0; i<4; i++))
-	   do
-		var="t$i"
-		[ ${!var} = true ] && suf=$suf${symb[$i]}
-		sed -i -e "${line[$i]}s/false/${!var}/" $CFG
-	   done
-	   if [ ! -z $suf ];then
-		sed -i -e "s/Chinese\",/Chinese $suf\",/" $MAIN
-	   fi
-	   $BLDCMD
-	   mv $STDBLD $RDIR/$WF.v$VM.$VS$suf$EXT
+	   func `expr $1 + 1` $t ${*:2}
 	done
-      done
-   done
-done
+   else
+	declare -a T=(${*:2})
+	echo;echo "---------------------------------------------------------"
+	cp $CFG.sav $CFG
+	cp $MAIN.tmp $MAIN 
+	uuid=`printf "0x%x\n" $(($uuid + 1))`
+	sed -i -e "s/$uuid0/$uuid/" $MAIN
+	suf=
+	for(( i=0; i<$Ncfg; i++))
+	do
+	   [ ${T[$i]} = true ] && suf=$suf${symb[$i]}
+	   sed -i -e "${line[$i]}s/false/${T[$i]}/" $CFG
+	done
+	if [ ! -z $suf ];then
+	   sed -i -e "s/Chinese\",/Chinese $suf\",/" $MAIN
+	fi
+	$BLDCMD
+	mv $STDBLD $RDIR/$WF.v$VM.$VS$suf$EXT
+   fi
+}
+
+func 0
 
 mv $CFG.sav $CFG
 mv $MAIN.sav $MAIN

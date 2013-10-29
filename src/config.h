@@ -3,11 +3,11 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		true	//whether to include second
+  #define INCLUDE_SEC		false	//whether to include second
 
   #define WHITE_BACKGROUND	false
 
-  #define FAHRENHEIT		true
+  #define FAHRENHEIT		false
 
   #define ZH_TRADITIONAL	true
 
