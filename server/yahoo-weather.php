@@ -9,7 +9,7 @@ error_reporting(0);
 
 $payload = json_decode(file_get_contents('php://input'), true);
 if(!$payload) {
-	$payload = json_decode("{\"1\": 30000000,\"2\": 120000000,\"3\": \"c\"}", true);
+	$payload = json_decode("{\"1\": 90000000,\"2\": 0,\"3\": \"c\"}", true);
 }	
 $lat = $payload[1] / 1000000;
 $long = $payload[2] / 1000000;

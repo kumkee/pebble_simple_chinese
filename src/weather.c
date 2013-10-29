@@ -19,6 +19,7 @@ static int lat, lng;
 
 static bool located = false;
 
+extern int32_t WEATHER_HTTP_COOKIE;
 
 void request_weather()
 {
@@ -130,14 +131,14 @@ void handle_success(int32_t cookie, int http_status, DictionaryIterator* receive
    if(temperature_tuple || temperature_tuple->value->int16!=999)
    {
 	temp = temperature_tuple->value->int16;
-	DTL_printf(&weather_layer, "%s%d%s ",
-		    WEATHER_CONDITION[idx], temp, *UNIT_SYSTEM=='c'?"℃":"℉");
+	DTL_printf(&weather_layer, "%s%d%s",
+		    WEATHER_CONDITION[idx], temp, *UNIT_SYSTEM=='c'?"℃ ":"°");
    }
    else
    {
 	temp = 999;
-	DTL_printf(&weather_layer, "%s∞%s ",
-		   WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃":"℉");
+	DTL_printf(&weather_layer, "%s∞%s",
+		   WEATHER_CONDITION[idx], *UNIT_SYSTEM=='c'?"℃ ":"°");
    }
 
    Tuple* updhr_tuple = dict_find(received, UPDATE_HOUR);

@@ -3,20 +3,26 @@
 
   #define NO_CCD		false	//whether to include Chinese Calendar date
 
-  #define INCLUDE_SEC		false	//whether to include second
+  #define INCLUDE_SEC		true	//whether to include second
 
   #define WHITE_BACKGROUND	false
+
+  #define FAHRENHEIT		true
 
   #define ZH_TRADITIONAL	true
 
 //Celsius / Fahrenheit
-  #define UNIT_SYSTEM "c" // c or f
-
   #define SERVER_URL "http://kumkee.ceio.pw/weather.php" 
   //These are default configurations
 
 //-------------------------------------------------------------------------
   #define DEBUG	0
+
+  #if FAHRENHEIT
+    #define UNIT_SYSTEM "f"
+  #else
+    #define UNIT_SYSTEM "c" // c or f
+  #endif
 
   #define INCLUDE_CCD		!NO_CCD	//whether to include Chinese Calendar date
 
@@ -131,7 +137,7 @@
 
 //mmm cookie
   //#define WEATHER_HTTP_COOKIE 1949999771
-  #define WEATHER_HTTP_COOKIE 1949327671
+  //#define WEATHER_HTTP_COOKIE 1949327671
 
 // HTTP app id
 //  #define HTTP_APP_ID 0xbc8495c3

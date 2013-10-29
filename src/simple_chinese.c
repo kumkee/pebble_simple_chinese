@@ -1,10 +1,10 @@
 #include "headers.h"
 
 
-#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x99, 0xC0, 0x90, 0xA0 }
+#define MY_UUID { 0x91, 0x41, 0xB6, 0x28, 0xBC, 0x89, 0x49, 0x8E, 0xB1, 0x47, 0x04, 0x9F, 0x9b, 0xC0, 0x90, 0xA0 }
 PBL_APP_INFO(MY_UUID,
-             "Simple Chinese", "kumkee",
-             1, 0, /* App version */
+             "Simple Chinese nsw", "kumkee",
+             3, 1, /* App version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_WATCH_FACE);
 
@@ -27,6 +27,8 @@ DynTextLayer info_layer;
 #if DEBUG
 DynTextLayer debug_layer;
 #endif
+
+int32_t WEATHER_HTTP_COOKIE;
 
 void line_layer_update_callback(Layer *me, GContext* ctx) {
 
@@ -78,6 +80,7 @@ void handle_init(AppContextRef ctx) {
 
   srand(time(NULL));
   int32_t HTTP_APP_ID = RAND_MAX/2 - rand(); 
+  WEATHER_HTTP_COOKIE = RAND_MAX/2 - rand();
   
   http_set_app_id(HTTP_APP_ID);
   HTTPCallbacks httpcallbacks = {

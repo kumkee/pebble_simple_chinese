@@ -1,7 +1,7 @@
 #!/bin/bash
 WF="simple_chinese"
 VM=3
-VS=1
+VS=2
 EXT='.pbw'
 CFG='src/config.h'
 MAIN="src/$WF.c"
@@ -9,8 +9,8 @@ BLDCMD='./waf build'
 BLDDIR='build'
 STDBLD=$BLDDIR/$WF$EXT
 RDIR="releases/v$VM.$VS"
-line=(4 6 8)
-symb=(n s w)
+line=(4 6 8 10)
+symb=(n s w f)
 tt=(true false)
 uuid0=0x99
 uuid=$uuid0
@@ -32,15 +32,17 @@ for t0 in ${tt[@]}
 do
    for t1 in ${tt[@]}
    do
-	for t2 in ${tt[@]}
+      for t2 in ${tt[@]}
+      do
+	for t3 in ${tt[@]}
 	do
-	   echo;echo "----------------------------------------------------------------------------------"
+	   echo;echo "---------------------------------------------------------"
 	   cp $CFG.sav $CFG
 	   cp $MAIN.tmp $MAIN 
 	   uuid=`printf "0x%x\n" $(($uuid + 1))`
 	   sed -i -e "s/$uuid0/$uuid/" $MAIN
 	   suf=
-	   for(( i=0; i<3; i++))
+	   for(( i=0; i<4; i++))
 	   do
 		var="t$i"
 		[ ${!var} = true ] && suf=$suf${symb[$i]}
@@ -52,6 +54,7 @@ do
 	   $BLDCMD
 	   mv $STDBLD $RDIR/$WF.v$VM.$VS$suf$EXT
 	done
+      done
    done
 done
 
